@@ -22,13 +22,11 @@ const routes = [
    },
    { path: '/products/item/:product_id/:affiliate_code', name: 'AffiliateGet', component: () => import('src/pages/Customer/Affiliate/GetRedirect.vue') },
    { path: '/print-order/:order_ref', name: 'OrderPrint', component: () => import('pages/Order/Print.vue') },
-   { path: '/print-label/:order_ref', name: 'OrderPrintLabel', component: () => import('pages/Order/PrintLabel.vue') },
    {
       path: '/p',
       component: () => import('src/layouts/BlankLayout.vue'),
       children: [
          { path: 'checkout', name: 'Checkout', component: () => import('src/pages/Checkout/Index.vue') },
-         { path: 'direct-checkout', name: 'DirectCheckout', component: () => import('src/pages/Checkout/DirectWithShipping.vue') },
          { path: 'invoice/:order_ref', name: 'UserInvoice', component: () => import('src/pages/Invoice/Index.vue') },
       ]
    },
@@ -50,7 +48,6 @@ const routes = [
          { path: '', name: 'CustomerDashboard', component: () => import('src/pages/Customer/CustomerDashboard.vue') },
          { path: 'edit', name: 'CustomerAccountEdit', component: () => import('src/pages/Customer/CustomerAccountEdit.vue') },
          { path: 'order', name: 'CustomerOrder', component: () => import('src/pages/Customer/CustomerOrder.vue') },
-         { path: 'address', name: 'CustomerAddress', component: () => import('src/pages/Customer/CustomerAddress.vue') },
          { path: 'review/:invoice_ref', name: 'OrderProductReview', component: () => import('src/pages/Customer/OrderProductReview.vue') },
          { path: 'reviews', name: 'CustomerReviews', component: () => import('src/pages/Customer/CustomerReviews.vue') },
          { path: 'MutasiSaldo', name: 'CustomerMutasiSaldo', component: () => import('pages/Customer/CustomerMutasiSaldo.vue') },
@@ -132,4 +129,3 @@ const routes = [
 ]
 
 export default routes
-

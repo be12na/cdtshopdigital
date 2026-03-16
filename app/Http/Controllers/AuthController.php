@@ -38,7 +38,7 @@ class AuthController extends Controller
 
       $data = [
          'token' => $token,
-         'user' => $user->load('address')
+         'user' => $user
       ];
       return ApiResponse::success($data);
    }
@@ -72,7 +72,7 @@ class AuthController extends Controller
 
       $data = [
          'token' => $token,
-         'user' => $user->load('address')
+         'user' => $user
       ];
       return ApiResponse::withEvent($event)->success($data);
    }
@@ -94,7 +94,6 @@ class AuthController extends Controller
 
       if ($user) {
          $is_valid = true;
-         $user->load('address');
       }
 
       return ApiResponse::success([

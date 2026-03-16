@@ -127,7 +127,7 @@ export default {
       changeBadgeColor(type) {
          if (type == 'PAID' || type == 'COMPLETE') return 'green'
          if (type == 'PROCESS') return 'blue'
-         if (type == 'SHIPPING') return 'teal'
+         if (type == 'TO_PROCESS') return 'teal'
          return 'grey-7'
       },
    }

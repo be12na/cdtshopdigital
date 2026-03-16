@@ -41,16 +41,10 @@ class UpdateOrderStatus extends Command
    {
       Order::where('order_status', 'PAID')
          ->orWhere('order_status', 'PROCESS')
-         ->update(['order_status' => 'TOSHIP']);
+         ->update(['order_status' => Order::TO_PROCESS]);
 
       Order::where('order_status', 'UNPAID')
-         ->whereHas('transaction', function ($q) {
-            $q->where('payment_type', 'COD');
-         })
-         ->update(['order_status' => 'TOSHIP']);
-
-      Order::where('order_status', 'UNPAID')
-         ->update(['order_status' => 'PENDING']);
+         ->update(['order_status' => Order::PENDING]);
 
       Transaction::where('payment_type', 'BANK_TRANSFER')->update([
          'payment_type' => Order::PAYMEMT_DIRECT_TRANSFER

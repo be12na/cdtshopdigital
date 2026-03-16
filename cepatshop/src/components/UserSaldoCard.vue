@@ -35,7 +35,6 @@ const addToCart = () => {
       name: `Deposit Saldo ${moneyIdr(deposit_amount.value)}`,
       price: deposit_amount.value,
       quantity: 1,
-      weight: 1,
       product_type: 'Deposit'
    }
 

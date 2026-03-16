@@ -7,9 +7,7 @@
         <div class="bg-dark text-white rounded-borders q-px-xs">{{ hourEl }}</div>
         <div class="bg-dark text-white rounded-borders q-px-xs">{{ minuteEl }}</div>
         <div class="bg-dark text-white rounded-borders q-px-xs">
-          <transition>
-            <span>{{ secondEl }}</span>
-          </transition>
+          <span>{{ secondEl }}</span>
         </div>
       </div>
     </div>
@@ -121,7 +119,7 @@ export default {
 
     }
   },
-  beforeDestroy() {
+  beforeUnmount() {
     clearInterval(this.interval)
   }
 }

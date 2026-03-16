@@ -14,9 +14,8 @@ export default {
 	data() {
 		return {
 			isSearch: true,
-			options: ['UNPAID', 'PAID', 'PACKING', 'SHIPPING', 'CANCELED'],
+			options: ['UNPAID', 'PAID', 'CANCELED'],
 			isFilter: false,
-			inputResiModal: false,
 			orderSelected: '',
 			followUpModal: false,
 			currentOrder: null,
@@ -25,7 +24,6 @@ export default {
 			search: '',
 			form: {
 				order_id: '',
-				resi: '',
 				status: ''
 			},
 		}

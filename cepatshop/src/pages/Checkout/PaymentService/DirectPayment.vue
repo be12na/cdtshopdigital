@@ -45,46 +45,6 @@ export default {
       user() {
          return this.$store.state.user.user
       },
-      can_select_payment() {
-         if (this.cart_order_form.is_digital) {
-            return true
-         }
-         if (this.cart_order_form.customer) {
-            return true
-         }
-
-         return false
-      },
-      can_cod_payment() {
-
-         if (this.cart_order_form.is_digital) {
-            return false
-         }
-
-         if (
-            this.config &&
-            this.config.is_cod_payment &&
-            this.cart_order_form.courier &&
-            this.cart_order_form.courier.courier_code == "COD"
-         ) {
-            return true;
-         }
-         return false;
-      },
-      can_cash_payment() {
-         if (this.cart_order_form.is_digital) {
-            return false
-         }
-         if (
-            this.config &&
-            this.config.is_cash_payment &&
-            this.cart_order_form.courier &&
-            this.cart_order_form.courier.courier_code == "PICKUP"
-         ) {
-            return true;
-         }
-         return false
-      },
       errors() {
          return this.$store.state.errors;
       },
@@ -107,34 +67,6 @@ export default {
                payment_type: "SALDO_BALANCE",
                icon_url: "static/wallet_icon.png",
                is_enable: this.can_saldo_payment('SALDO_BALANCE')
-            })
-         }
-
-
-         if (this.can_cash_payment) {
-            payments.push({
-               id: "cash",
-               payment_name: "Bayar tunai ditoko",
-               payment_code: "",
-               payment_fee: 0,
-               payment_method: "CASH",
-               payment_type: "CASH",
-               icon_url: "static/payment-cod.png",
-               is_enable: true
-            })
-         }
-
-         if (this.can_cod_payment) {
-            payments.push({
-               id: "cod",
-               payment_name: "Bayar ditempat (COD)",
-               payment_info: "Bayar saat pesanan diantarkan",
-               payment_code: "",
-               payment_fee: 0,
-               payment_method: "COD",
-               payment_type: "COD",
-               icon_url: "static/payment-cod.png",
-               is_enable: true
             })
          }
 

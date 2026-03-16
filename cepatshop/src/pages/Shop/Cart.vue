@@ -201,26 +201,7 @@ export default {
          return this.$store.state.session_id;
       },
       isCanChekout: function () {
-         if (
-            this.cart_order_form.items.length &&
-            this.config &&
-            (this.config.can_checkout_local || this.config.can_checkout_pickup || this.config.can_checkout_courier)
-         ) {
-            return true;
-         }
-         if(this.cart_order_form.is_digital && this.config && this.config.can_checkout_digital) {
-            return true
-         }
-         return false
-      },
-      isCanCheckoutDirectWithShipping() {
-         if (this.cart_order_form.items.length && this.shop.phone) {
-            if (this.config.can_cod || this.config.can_shipping) {
-               return true;
-            }
-         }
-
-         return false;
+         return this.cart_order_form.items.length && this.config && this.config.can_checkout_digital ? true : false
       },
       isCanCheckoutWhatsapp() {
          return this.config && this.config.is_whatsapp_checkout && this.shop.phone
@@ -228,10 +209,7 @@ export default {
             : false;
       },
       enableQty() {
-         if(this.cart_order_form.is_default) {
-            return true
-         }
-         return false
+         return !this.cart_order_form.is_deposit
       }
    },
    mounted() {
@@ -242,19 +220,8 @@ export default {
          this.$store.dispatch("getShop");
       }
       this.$store.dispatch('getConfig')
-      this.getUserAddress()
    },
    methods: {
-      getUserAddress() {
-         if (this.user) {
-
-            this.$store.dispatch('user/getUserAddress').then(res => {
-               if (res.status == 200) {
-                  this.$store.commit('user/SET_USER_ADDRESS', res.data.data)
-               }
-            })
-         }
-      },
       onResponse(evt) {
          if (evt === true) {
             this.loginModal = false;
@@ -311,11 +278,7 @@ export default {
          }
       },
       checkoutWhatsapp() {
-         if (this.config.can_shipping) {
-            this.$router.push({ name: "DirectCheckout" });
-         } else {
-            this.directCheckoutModal = true;
-         }
+         this.directCheckoutModal = true;
       },
       setQty(e, cart) {
          let qty = e.target.value;

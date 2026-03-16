@@ -116,7 +116,6 @@ export default {
             note: note,
             product_url: this.getRoutePath(product.slug),
             image_url: product.assets[0].src,
-            weight: 1,
             product_type: product.product_type,
             is_single_checkout: true,
             affiliate_code: "",

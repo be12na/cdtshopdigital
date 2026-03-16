@@ -18,23 +18,12 @@ class Order extends Model
    protected $guarded = [];
 
    public const PENDING = 'PENDING';
-   public const PROCESS = 'PROCESS';
-   public const TOSHIP = 'TOSHIP';
    public const TO_PROCESS = 'TO_PROCESS';
-   public const SHIPPING = 'SHIPPING';
    public const COMPLETE = 'COMPLETE';
    public const CANCELED = 'CANCELED';
-   public const AWAITING_PICKUP = 'AWAITING_PICKUP';
-
-
-   public const SHIPPING_COD = 'COD';
-   public const SHIPPING_PICKUP = 'PICKUP';
-   public const SHIPPING_COURIER = 'COURIER';
 
    public const PAYMENT_GATEWAY = 'PAYMENT_GATEWAY';
    public const PAYMEMT_DIRECT_TRANSFER = 'DIRECT_TRANSFER';
-   public const PAYMEMT_CASH = 'CASH';
-   public const PAYMEMT_COD = 'COD';
    public const PAYMEMT_SALDO_BALANCE = 'SALDO_BALANCE';
 
    public $appends = [
@@ -42,14 +31,10 @@ class Order extends Model
       'customer_status',
       'created',
       'billing_total',
-      'subtotal_shipping_cost',
-      'can_check_waybill',
       'can_review',
       'can_completed',
-      'can_input_resi',
       'can_cancel_order',
       'can_confirm_payment',
-      'can_shipping',
       'can_delete_order'
    ];
 
@@ -59,44 +44,14 @@ class Order extends Model
    {
       return $this->order_total + $this->payment_fee;
    }
-   public function getSubtotalShippingCostAttribute()
-   {
-      return $this->shipping_cost - $this->shipping_discount;
-   }
 
    public function getCanCancelOrderAttribute()
    {
-      return in_array($this->order_status, [self::PENDING, self::TOSHIP, self::AWAITING_PICKUP]);
+      return in_array($this->order_status, [self::PENDING, self::TO_PROCESS]);
    }
    public function getCanDeleteOrderAttribute()
    {
       return in_array($this->order_status, [self::CANCELED]);
-   }
-
-   public function getCanInputResiAttribute()
-   {
-      if ($this->shipping_courier_id == "COD" || $this->shipping_courier_id == "PICKUP") {
-         return false;
-      }
-
-      if ($this->order_status == self::TOSHIP || $this->order_status == self::SHIPPING) {
-         return true;
-      }
-
-      return false;
-   }
-
-   public function getCanShippingAttribute()
-   {
-      if ($this->order_status == self::PENDING && $this->transaction->payment_type == self::PAYMEMT_COD) {
-         return true;
-      }
-
-      if ($this->order_status == self::TOSHIP && ($this->shipping_courier_code || $this->shipping_courier_id == self::SHIPPING_COD)) {
-         return true;
-      }
-
-      return false;
    }
 
    public function is_deposit_type()
@@ -109,7 +64,7 @@ class Order extends Model
    }
    public function is_default_type()
    {
-      return $this->product_type == ProductTypeEnum::Default->value;
+      return !$this->is_deposit_type() && $this->is_digital_type();
    }
 
    public function user()
@@ -145,11 +100,6 @@ class Order extends Model
 
       return false;
    }
-   public function getCanCheckWaybillAttribute()
-   {
-      return true;
-      return $this->order_status != self::PENDING;
-   }
 
    public function transaction()
    {
@@ -165,22 +115,6 @@ class Order extends Model
                'title'  => 'Pesanan Dibatalkan',
                'desc'   => 'Pesanan dibatalkan ' . $reason,
                'icon'   => 'production_quantity_limits'
-            ];
-            break;
-         case self::TOSHIP:
-            return [
-               'label'  => 'Perlu Dikirim',
-               'title'  => 'Pesanan Perlu Dikirim',
-               'desc'   => 'Segera kemas dan kirim pesanan ke pembeli',
-               'icon'   => 'move_to_inbox'
-            ];
-            break;
-         case self::SHIPPING:
-            return [
-               'label'  => 'Dikirim',
-               'title'  => 'Pesanan Sedang Dikirim',
-               'desc'   => 'Pesanan sedang dalam proses pengiriman',
-               'icon'   => 'local_shipping'
             ];
             break;
          case self::TO_PROCESS:
@@ -209,15 +143,6 @@ class Order extends Model
             ];
             break;
 
-         case self::AWAITING_PICKUP:
-            return [
-               'label'  => 'Menunggu Diambil',
-               'title'  => 'Menunggu Diambil',
-               'desc'   => 'Pesanan menungu di ambil oleh pelanggan',
-               'icon'   => 'moped'
-            ];
-            break;
-
          default:
             $exp = Carbon::parse($this->expired_at)->translatedFormat('l, d M Y H:i:s');
             $msg = 'Menuggu pembayaran dari pembeli, batas pembayaran ' . $exp;
@@ -242,19 +167,6 @@ class Order extends Model
                'icon'   => 'production_quantity_limits'
             ];
             break;
-         case self::TOSHIP:
-            $msg = 'Pesanan sedang dikemas, menunggu diserahkan ke ekspedisi.';
-            if ($this->shipping_type == self::SHIPPING_COD) {
-               $msg =
-                  'Pesanan sedang dikemas, menunggu dikirim oleh kurir kami.';
-            }
-            return [
-               'label'  => 'Dikemas',
-               'title'  => 'Pesanan Dikemas',
-               'desc'   => $msg,
-               'icon'   => 'move_to_inbox'
-            ];
-            break;
          case self::TO_PROCESS:
             if ($this->transaction->status == 'UNPAID' && $this->transaction->payment_proof) {
                return [
@@ -271,28 +183,12 @@ class Order extends Model
                'icon'   => 'av_timer'
             ];
             break;
-         case self::SHIPPING:
-            return [
-               'label'  => 'Dikirim',
-               'title'  => 'Pesanan Dikirim',
-               'desc'   => 'Pesanan sedang dalam proses pengiriman',
-               'icon'   => 'local_shipping'
-            ];
-            break;
          case self::COMPLETE:
             return [
                'label'  => 'Selesai',
                'title'  => 'Pesanan Selesai',
                'desc'   => 'Pesanan selesai, terima kasih telah berbelanja',
                'icon'   => 'receipt_long'
-            ];
-            break;
-         case self::AWAITING_PICKUP:
-            return [
-               'label'  => 'Menunggu Diambil',
-               'title'  => 'Menunggu Diambil',
-               'desc'   => 'Silahkan datang dan ambil pesanan anda di toko kami',
-               'icon'   => 'moped'
             ];
             break;
 
@@ -310,6 +206,12 @@ class Order extends Model
    protected static function boot()
    {
       parent::boot();
+
+      static::creating(function ($model) {
+         if (!$model->product_type) {
+            $model->product_type = ProductTypeEnum::Digital->value;
+         }
+      });
 
       static::created(function ($model) {
          $prefix = 'INV';
@@ -353,45 +255,13 @@ class Order extends Model
 
    public function getCanConfirmPaymentAttribute()
    {
-      if ($this->product_type == ProductTypeEnum::Default->value && in_array($this->order_status, [self::PENDING, self::TO_PROCESS]) && $this->transaction->status == Transaction::UNPAID) {
-         return true;
-      }
-      if (
-         in_array($this->order_status, [self::PENDING, self::TO_PROCESS]) &&
-         $this->transaction->payment_type != "COD" &&
-         in_array($this->transaction->status, ['UNPAID'])
-      ) {
-         return true;
-      }
-      return false;
+      return in_array($this->order_status, [self::PENDING, self::TO_PROCESS])
+         && in_array($this->transaction->status, [Transaction::UNPAID]);
    }
 
    public function getCanCompletedAttribute()
    {
-      return in_array($this->order_status, [self::SHIPPING, self::AWAITING_PICKUP, self::TO_PROCESS]);
-   }
-
-   public function canTrackingWaybill()
-   {
-      if ($this->product_type != ProductTypeEnum::Default->value) {
-         return false;
-      }
-      if (!$this->shipping_courier_id) {
-         return false;
-      }
-      if (!$this->shipping_courier_code) {
-         return false;
-      }
-      if ($this->shipping_type != self::SHIPPING_COURIER) {
-         return false;
-      }
-      if (str_contains($this->shipping_courier_id, 'gojek') || str_contains($this->shipping_courier_id, 'grab')) {
-         return false;
-      }
-      if (!$this->received_at) {
-         return true;
-      }
-      return false;
+      return in_array($this->order_status, [self::TO_PROCESS]);
    }
 
    public function histories()
@@ -411,9 +281,6 @@ class Order extends Model
          ['label' => 'Semua', 'value' => 'ALL'],
          ['label' => 'Pending', 'value' => self::PENDING],
          ['label' => 'Perlu Diproses', 'value' => self::TO_PROCESS],
-         ['label' => 'Perlu Dikirim', 'value' => self::TOSHIP],
-         ['label' => 'Dikirim', 'value' => self::SHIPPING],
-         ['label' => 'Menunggu Diambil', 'value' => self::AWAITING_PICKUP],
          ['label' => 'Selesai', 'value' => self::COMPLETE],
          ['label' => 'Batal', 'value' => self::CANCELED],
       ];
@@ -422,8 +289,6 @@ class Order extends Model
    {
       return [
          ['label' => 'PENDING', 'value' => self::PENDING],
-         ['label' => 'TOSHIP', 'value' => self::TOSHIP],
-         ['label' => 'SHIPPING', 'value' => self::SHIPPING],
          ['label' => 'COMPLETE', 'value' => self::COMPLETE],
          ['label' => 'CANCELED', 'value' => self::CANCELED],
       ];

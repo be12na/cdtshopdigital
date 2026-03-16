@@ -14,20 +14,18 @@
          </div>
          <div class="checkout-content">
 
-            <q-card id="customer_detail" class="section q-mt-md shadow" v-if="cart_order_form.is_digital">
+            <q-card id="customer_detail" class="section q-mt-md shadow">
                <q-card-section>
                   <div class="q-gutter-y-sm">
                      <div class="card-subtitle">Detail Pelanggan</div>
                      <q-input filled label="Nama" v-model=form.receiver_name></q-input>
                      <q-input filled label="No Whatstapp" v-model=form.receiver_phone></q-input>
-
+                     <q-input filled label="Email (Opsional)" v-model=form.receiver_email></q-input>
 
                   </div>
                   <div class="text-red q-pa-xs text-xs" v-if="errors.customer">{{ errors.customer }}</div>
                </q-card-section>
             </q-card>
-
-            <ShippingAddress v-if="!cart_order_form.is_digital" canEmail ref="shippingAddress"></ShippingAddress>
 
             <PaymentList />
             <VoucherDscount ref="voucher" v-if="!cart_order_form.is_deposit"></VoucherDscount>
@@ -48,12 +46,11 @@
 
 <script>
 import CartOrderDetail from './CartOrderDetail.vue'
-import ShippingAddress from './ShippingAddress.vue'
 import PaymentList from './PaymentList.vue'
 import ReviewOrder from './ReviewOrder.vue'
 import VoucherDscount from './VoucherDscount.vue'
 export default {
-   components: { CartOrderDetail, ShippingAddress, PaymentList, ReviewOrder, VoucherDscount },
+   components: { CartOrderDetail, PaymentList, ReviewOrder, VoucherDscount },
    name: 'CheckoutPage',
    data() {
       return {
@@ -61,6 +58,7 @@ export default {
          form: {
             receiver_name: '',
             receiver_phone: '',
+            receiver_email: '',
             order_note: ''
          }
       }
@@ -94,7 +92,6 @@ export default {
    created() {
       this.$store.commit('cart/SET_CUSTOMER', null)
       this.$store.commit('cart/SET_PAYMENT', null)
-      this.$store.commit('cart/SET_COURIER', null)
 
       this.$store.dispatch('getConfig')
    },
@@ -103,14 +100,10 @@ export default {
          this.$router.push({ name: 'Cart' })
          return
       }
-      if (this.config) {
-         if (!this.config.can_checkout_local && !this.config.can_checkout_pickup && !this.config.can_checkout_courier && !this.config.can_checkout_digital) {
-            this.$router.back()
-         }
-      }
       if (this.user) {
          this.form.receiver_name = this.user.name
          this.form.receiver_phone = this.user.phone
+         this.form.receiver_email = this.user.email
       }
    },
    methods: {
@@ -151,47 +144,17 @@ export default {
       generateFormOrder() {
          this.$store.commit('CLEAR_ERRORS')
 
-         let customer = null
-
-         if (this.cart_order_form.is_digital) {
-
-            if (!this.form.receiver_name || !this.form.receiver_phone) {
-               let msg = 'Detail pelanggan belum diisi'
-               this.$store.commit('SET_ERRORS', { customer: msg })
-               this.jumpTo('customer_detail')
-               this.$q.notify({
-                  type: 'negative',
-                  message: msg
-               })
-               return false
-            }
-
-            customer = this.form
-         } else {
-
-            if (!this.cart_order_form.customer) {
-               let msg = 'Alamat pengiriman belum diisi'
-               this.$store.commit('SET_ERRORS', { customer: msg })
-               this.jumpTo('shipping_section')
-               this.$q.notify({
-                  type: 'negative',
-                  message: msg
-               })
-               return false
-            }
-            if (!this.cart_order_form.courier) {
-               let msg = 'Kurir & ongkos kirim belum dipilih'
-               this.$store.commit('SET_ERRORS', { courier: msg })
-               this.jumpTo('courier_section')
-               this.$q.notify({
-                  type: 'negative',
-                  message: msg
-               })
-               return false
-            }
-
-            customer = this.cart_order_form.customer
+         if (!this.form.receiver_name || !this.form.receiver_phone) {
+            let msg = 'Detail pelanggan belum diisi'
+            this.$store.commit('SET_ERRORS', { customer: msg })
+            this.jumpTo('customer_detail')
+            this.$q.notify({
+               type: 'negative',
+               message: msg
+            })
+            return false
          }
+
          if (!this.cart_order_form.payment) {
             let msg = 'Metode pembayaran belum dipilih'
             this.$store.commit('SET_ERRORS', { payment: msg })
@@ -206,10 +169,9 @@ export default {
          let data = this.cart_order_form
          let form = {
             product_type: data.product_type,
-            customer_name: customer.receiver_name,
-            customer_phone: customer.receiver_phone,
-            customer_email: customer.receiver_email ?? null,
-            shipping_address: customer.full_address ?? null,
+            customer_name: this.form.receiver_name,
+            customer_phone: this.form.receiver_phone,
+            customer_email: this.form.receiver_email ?? null,
             payment_type: data.payment.payment_type,
             payment_method: data.payment.payment_method,
             payment_name: data.payment.payment_name,
@@ -217,21 +179,14 @@ export default {
             payment_fee: data.payment.payment_fee,
             order_items: data.items,
             order_qty: data.qty,
-            order_weight: data.weight,
             order_unique_code: data.unique_code,
             service_fee: data.service_fee,
             order_subtotal: data.subtotal,
             order_total: data.total,
             grand_total: data.grand_total,
-            shipping_courier_id: data.courier?.courier_code || null,
-            shipping_courier_name: data.courier?.courier_name || null,
-            shipping_courier_service: data.courier?.courier_service_name || null,
-            shipping_cost: data.courier?.price || 0,
             voucher_discount: data.voucher_discount,
-            shipping_discount: data.shipping_discount,
             voucher_id: data.voucher ? data.voucher.id : null,
             customer_note: data.customer_note,
-            shipping_coordinate: data.customer && data.customer.coordinate ? data.customer.coordinate.join(',') : '',
          }
 
          return form

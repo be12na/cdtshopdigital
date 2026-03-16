@@ -35,6 +35,7 @@
 <script>
 import { BaseApi } from "boot/axios";
 export default {
+   name: "ConfigTheming",
    data() {
       return {
          form: {

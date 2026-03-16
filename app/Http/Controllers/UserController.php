@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\UserAddress;
 use App\Helpers\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -107,7 +106,7 @@ class UserController extends Controller
       }
       $user->save();
 
-      $data = $user->load('address');
+      $data = $user;
       return ApiResponse::success($data);
    }
 
@@ -120,8 +119,6 @@ class UserController extends Controller
       } else {
          $user->delete();
       }
-
-      UserAddress::where('user_id', $user->id)->delete();
 
       return ApiResponse::success();
    }

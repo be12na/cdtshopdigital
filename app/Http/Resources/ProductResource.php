@@ -48,7 +48,6 @@ class ProductResource extends JsonResource
          'sku' => $this->sku,
          'stock' => intval($this->stock),
          'rating' => $this->reviews_avg_rating ? number_format($this->reviews_avg_rating, 1) : 0,
-         'weight' => intval($this->weight),
          'assets' => $this->assets,
          'reviews_count' => $this->reviews_count,
          'varian_items' => $this->varianItemSortByPrice,

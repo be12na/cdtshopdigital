@@ -96,9 +96,6 @@ export function getUserPermissions({ commit }) {
       commit('SET_PERMISSIONS', response.data.data)
    })
 }
-export function getUserAddress({ }) {
-   return BaseApi.get('user-address')
-}
 export function updateUser({ commit }, payload) {
    BaseApi.post('user/update', payload).then(response => {
       if (response.status == 200) {
@@ -148,4 +145,3 @@ export function validationToken({ commit }) {
       }
    })
 }
-

@@ -10,7 +10,7 @@ class AccountController extends Controller
 {
     public function show(Request $request)
     {
-        $user = $request->user()->load('address');
+        $user = $request->user();
         return ApiResponse::success($user);
     }
     
@@ -42,7 +42,7 @@ class AccountController extends Controller
         }
         $user->save();
 
-        $data = $user->load('address');
+        $data = $user;
         return ApiResponse::success($data);
     }
 }

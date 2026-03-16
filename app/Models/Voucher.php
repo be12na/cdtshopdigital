@@ -20,12 +20,7 @@ class Voucher extends Model
       'discount_amount',
       'max_discount_amount',
       'min_transaction',
-      'is_type_shipping',
       'usage_quota',
-   ];
-
-   protected $casts = [
-      'is_type_shipping' => 'boolean'
    ];
 
    public $appends = ['detail_label', 'end_date_label', 'type_label'];
@@ -56,24 +51,21 @@ class Voucher extends Model
    }
    public function getTypeLabelAttribute()
    {
-      $voucherType = $this->is_type_shipping ? 'Gratis Ongkir hingga' : 'Voucher Diskon ';
-
       if ($this->discount_type == 'percent') {
-         $label_disc = $voucherType . $this->discount_amount . '%';
+         $label_disc = 'Voucher Diskon ' . $this->discount_amount . '%';
       } else {
-         $label_disc =  $voucherType . ' Rp' . shortNumber($this->discount_amount);
+         $label_disc =  'Voucher Diskon Rp' . shortNumber($this->discount_amount);
       }
       return $label_disc;
    }
    public function getDetailLabelAttribute()
    {
       $min_trx = $this->min_transaction > 0 ? shortNumber($this->min_transaction) : $this->min_transaction;
-      $voucherType = $this->is_type_shipping ? 'Gratis Ongkir hingga' : 'Voucher Diskon ';
 
       if ($this->discount_type == 'percent') {
-         $label_disc = $voucherType . $this->discount_amount . '%';
+         $label_disc = 'Voucher Diskon ' . $this->discount_amount . '%';
       } else {
-         $label_disc = $voucherType . ' Rp' . shortNumber($this->discount_amount);
+         $label_disc = 'Voucher Diskon Rp' . shortNumber($this->discount_amount);
       }
 
       $mas_disc = $this->max_discount_amount > 0 ? ' hingga ' . shortNumber($this->max_discount_amount) : '';

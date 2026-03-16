@@ -4,7 +4,6 @@ export default function () {
       token: null,
       user: null,
       permissions: [],
-      address: JSON.parse(localStorage.getItem('user_addresses')) || [],
       customer_licenses: {
          data: [],
          count: 0,

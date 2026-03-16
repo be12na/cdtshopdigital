@@ -53,13 +53,11 @@ export function CLEAR_CART(state) {
    state.carts = []
    state.payment = null
    state.customer = null
-   state.courier = null
    state.voucher = null
 }
 export function CLEAR_CART_ORDER(state) {
    state.payment = null
    state.customer = null
-   state.courier = null
    state.voucher = null
 }
 export function SET_CARTS(state, payload) {
@@ -90,15 +88,6 @@ export function SET_CUSTOMER(state, payload) {
    state.customer = payload
    if (state.payment && state.payment_tyoe != 'DIRECT_TRANSFER') {
       state.payment = null
-   }
-}
-export function SET_COURIER(state, payload) {
-   state.courier = payload
-
-   if (payload && payload.courier_code != 'COD') {
-      if (state.payment && state.payment.payment_type == 'COD') {
-         state.payment = null
-      }
    }
 }
 export function SET_SERVICE_FEE(state, config) {

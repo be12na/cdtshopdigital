@@ -96,7 +96,7 @@ class ProductService
          $product->title = $request->title;
          $product->category_id =  $request->category_id;
          $product->description = $request->description;
-         $product->product_type = $request->product_type;
+         $product->product_type = $request->product_type ?? ProductTypeEnum::Digital->value;
 
          $product->aff_is_active = $request->boolean('aff_is_active') ?? false;
          $product->aff_is_percentage = $request->boolean('aff_is_percentage') ?? false;
@@ -104,27 +104,27 @@ class ProductService
 
          $is_simple_product = $request->boolean('simple_product');
 
-         $product_type = $request->product_type;
+         $product_type = $request->product_type ?? ProductTypeEnum::Digital->value;
          $defaultPrice = $request->price ?? 0;
          $defaultStock =  $request->stock ?? 0;
-         $defaultWeight = $request->weight ?? 1;
 
-         if (ProductTypeEnum::DigitalDownload->value == $product_type || ProductTypeEnum::DigitalVideo->value == $product_type) {
+         if (
+            ProductTypeEnum::Digital->value == $product_type
+            || ProductTypeEnum::DigitalDownload->value == $product_type
+            || ProductTypeEnum::DigitalVideo->value == $product_type
+         ) {
             $is_simple_product = true;
             $defaultStock = -1;
-            $defaultWeight = 1;
          }
 
          if ($is_simple_product) {
 
             $product->price = $defaultPrice;
             $product->stock = $defaultStock;
-            $product->weight = $defaultWeight;
          } else {
 
             $product->price = 0;
             $product->stock = 0;
-            $product->weight = 0;
          }
 
          $product->save();
@@ -194,14 +194,12 @@ class ProductService
                   foreach ($data['subvarian'] as $item) {
                      $item['product_id'] = $product->id;
                      $item['price'] = str_replace(".", "", $item['price']);
-                     $item['weight'] = str_replace(".", "", $item['weight']);
 
                      $varian->subvarian()->create($item);
                   }
                } else {
 
                   $data['price'] = str_replace(".", "", $data['price']);
-                  $data['weight'] = str_replace(".", "", $data['weight']);
                   $product->varians()->create($data);
                }
             }
@@ -257,16 +255,17 @@ class ProductService
 
          $is_simple_product = $request->boolean('simple_product');
 
-         $product_type = $request->product_type;
-
-         $product_type = $request->product_type;
+         $product_type = $request->product_type ?? $product->product_type ?? ProductTypeEnum::Digital->value;
+         $product->product_type = $product_type;
          $defaultPrice = $request->price ?? 0;
          $defaultStock =  $request->stock ?? 0;
-         $defaultWeight = $request->weight ?? 1;
 
-         if (ProductTypeEnum::DigitalDownload->value == $product_type || ProductTypeEnum::DigitalVideo->value == $product_type) {
+         if (
+            ProductTypeEnum::Digital->value == $product_type
+            || ProductTypeEnum::DigitalDownload->value == $product_type
+            || ProductTypeEnum::DigitalVideo->value == $product_type
+         ) {
             $is_simple_product = true;
-            $defaultWeight = 1;
             $defaultStock = -1;
          }
 
@@ -275,7 +274,6 @@ class ProductService
 
             $product->price = $defaultPrice;
             $product->stock = $defaultStock;
-            $product->weight = $defaultWeight;
 
             $product->varians()->delete();
          }
@@ -359,7 +357,6 @@ class ProductService
 
             $product->stock = 0;
             $product->price = 0;
-            $product->weight = 0;
             $product->save();
 
             foreach ($request->varians as $data) {
@@ -384,7 +381,6 @@ class ProductService
 
                      $item['product_id'] = $product->id;
                      $item['price'] = str_replace(".", "", $item['price']);
-                     $item['weight'] = str_replace(".", "", $item['weight']);
 
                      if (isset($item['id'])) {
 
@@ -396,7 +392,6 @@ class ProductService
                } else {
 
                   $data['price'] = str_replace(".", "", $data['price']);
-                  $data['weight'] = str_replace(".", "", $data['weight']);
 
                   if (isset($data['id'])) {
 

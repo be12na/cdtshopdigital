@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\LicenseController;
 use App\Http\Controllers\AffiliateController;
-use App\Http\Controllers\UserAddressController;
 use App\Http\Controllers\Frontend\CustomerController;
 use App\Http\Controllers\WithdrawalController;
 
@@ -30,8 +29,6 @@ Route::get('affiliate/products', [AffiliateController::class, 'getProductAffilia
 Route::get('affiliate/leaderboard', [AffiliateController::class, 'leaderboard']);
 Route::get('affiliate/getLeads', [AffiliateController::class, 'leads']);
 
-Route::apiResource('user-address', UserAddressController::class)->except('show');
-
 Route::get('licenses', [LicenseController::class, 'index']);
 Route::get('download', [LicenseController::class, 'download']);
 Route::get('license/{id}', [LicenseController::class, 'show']);
@@ -42,5 +39,4 @@ Route::get('getDownloadUrl/{id}', [LicenseController::class, 'getDownloadUrl']);
 
  Route::post('withdrawal', [WithdrawalController::class, 'store']);
  Route::get('customer/withdrawals', [WithdrawalController::class, 'byUser']);
-
 

@@ -85,7 +85,6 @@ class Permission extends Model
                 'View',
                 'Basic',
                 'Order',
-                'Shipping',
                 'SMTP',
                 'Whatsapp Gateway',
                 'Payment Gateway',

@@ -19,8 +19,6 @@ class CreateOrderHistoriesTable extends Migration
          $table->date('date');
          $table->time('time');
          $table->string('description');
-         $table->string('city_name')->nullable();
-         $table->string('manifest_code')->nullable();
       });
    }
 

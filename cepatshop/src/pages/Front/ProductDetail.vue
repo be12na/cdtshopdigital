@@ -693,13 +693,6 @@ export default {
       getCurrentPrice() {
          return this.getDefaultPrice - this.getDiscountAmount
       },
-      getCurrentWeight() {
-         if (this.product_varian_selected) {
-            return parseInt(this.product_varian_selected.weight)
-         }
-
-         return parseInt(this.product.weight)
-      },
 
    },
    methods: {
@@ -776,7 +769,6 @@ export default {
             note: this.getVarianTextNote(),
             product_url: this.getRoutePath(),
             image_url: this.product.assets[0].src,
-            weight: this.getCurrentWeight,
             product_type: this.product.product_type,
             affiliate_code: this.getAffiliateCode(),
          }

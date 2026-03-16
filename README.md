@@ -31,11 +31,12 @@ Source code aplikasi toko online SPA dan PWA Ready
    - DB_PASSWORD
    - APP_NAME
    - APP_URL
-2. Import database `database-starter.sql`  
-   atau menggunakan laravel command `php artisan app:install`  
-   Default Kredensial:
+2. Jalankan laravel command:
+   - `php artisan app:install`
+   - (opsional demo) `php artisan app:install --with_demo=1`
+   Default kredensial:
    - email = admin@example.com
-   - password = password
+   - password = admin123
 
 ### CRON JOB ( recommended )
 `* * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1`
@@ -62,9 +63,7 @@ Jika via browser muncul error not found gunakan force refresh browser atau via H
 `app_key` terdapat pada file .env APP_KEY
 
 ### Penting!!
-Jika versi sebelumnya <= 2.7.x, segera atur kembali pengaturan alamat gudang pengiriman dan pengiriman lokal
-.
-
+Jika versi sebelumnya <= 2.7.x, fitur produk fisik (pengiriman/COD/ongkir/alamat) sudah dihapus dan seluruh produk default menjadi Digital.
 
 
 

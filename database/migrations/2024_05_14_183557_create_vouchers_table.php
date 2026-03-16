@@ -24,7 +24,6 @@ class CreateVouchersTable extends Migration
          $table->integer('max_discount_amount')->default(0);
          $table->integer('min_transaction')->default(0);
          $table->integer('usage_quota')->default(0);
-         $table->boolean('is_type_shipping')->default(0);
          $table->timestamps();
       });
    }

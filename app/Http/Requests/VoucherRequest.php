@@ -34,7 +34,6 @@ class VoucherRequest extends FormRequest
          'max_discount_amount' => ['required', 'numeric'],
          'min_transaction' => ['required', 'numeric'],
          'usage_quota' => ['required', 'numeric'],
-         'is_type_shipping' => ['required'],
       ];
    }
 }

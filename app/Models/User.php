@@ -51,17 +51,9 @@ class User extends Authenticatable
     */
    protected $casts = [
       'email_verified_at' => 'datetime',
-      'is_primary' => 'boolean'
    ];
 
-   protected $with = ['address'];
-
    public $appends = ['is_admin', 'permissions'];
-
-   public function address()
-   {
-      return $this->hasMany(UserAddress::class);
-   }
 
    public function role()
    {

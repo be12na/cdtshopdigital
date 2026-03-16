@@ -22,7 +22,6 @@ class CreateOrdersTable extends Migration
             $table->string('customer_whatsapp')->nullable();
             $table->integer('order_qty');
             $table->integer('order_subtotal');
-            $table->integer('order_weight');
             $table->integer('order_unique_code');
             $table->integer('order_total')->default(0);
             $table->string('order_status'); 

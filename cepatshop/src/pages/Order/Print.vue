@@ -31,14 +31,6 @@
                      {{ dateFormat(invoice.created_at) }}
                   </td>
                </tr>
-
-               <tr v-if="invoice.shipping_courier_code">
-                  <td style="padding: 1px 5px" align="left">No Resi</td>
-                  <td style="padding: 1px 5px">:</td>
-                  <td style="padding: 1px 5px">
-                     {{ invoice.shipping_courier_code }}
-                  </td>
-               </tr>
                <tr>
                   <td style="padding: 1px 5px" align="left">Total Pesanan</td>
                   <td style="padding: 1px 5px">:</td>
@@ -67,7 +59,6 @@
                   <div style="margin-bottom: 4px; font-weight: 500">Penerima</div>
                   <div style="font-weight: 600">{{ invoice.customer_name }}</div>
                   <div>{{ invoice.customer_whatsapp }}</div>
-                  <div v-html="invoice.shipping_address" style="margin-top: 4px"></div>
                </td>
             </tr>
             </tbody>

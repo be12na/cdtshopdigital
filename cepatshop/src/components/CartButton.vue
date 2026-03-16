@@ -102,7 +102,6 @@ export default {
             quantity: 1,
             product_url: this.getRoutePath(),
             image_url: this.product.assets[0].src,
-            weight: this.product.weight,
             product_type: this.product.product_type
          })
       },

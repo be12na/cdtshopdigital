@@ -12,7 +12,7 @@
 
 <script>
 export default {
-  name: 'navigation',
+  name: 'NavigationItem',
    props: {
     title: {
       type: String,

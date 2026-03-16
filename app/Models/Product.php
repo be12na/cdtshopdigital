@@ -20,7 +20,7 @@ class Product extends Model
 
    protected $guarded = [];
 
-   const PRODUCT_DEFAULT = 'Default';
+   const PRODUCT_DEFAULT = 'Digital';
    const PRODUCT_DIGITAL = 'Digital';
    const PRODUCT_DEPOSIT = 'Deposit';
 
@@ -52,6 +52,9 @@ class Product extends Model
       parent::boot();
 
       static::creating(function ($model) {
+         if (!$model->product_type) {
+            $model->product_type = ProductTypeEnum::Digital->value;
+         }
          try {
             $model->sku = Generator::uuid4()->toString();
          } catch (\Exception $e) {
@@ -83,7 +86,7 @@ class Product extends Model
    }
    public function getIsUnlimitedStockAttribute()
    {
-      if (in_array($this->product_type, [ProductTypeEnum::DigitalDownload->value, ProductTypeEnum::DigitalVideo->value])) {
+      if (in_array($this->product_type, [ProductTypeEnum::Digital->value, ProductTypeEnum::DigitalDownload->value, ProductTypeEnum::DigitalVideo->value])) {
          return true;
       }
       return false;
@@ -99,7 +102,7 @@ class Product extends Model
    }
    public function getIsDefaultTypeAttribute()
    {
-      return $this->product_type == ProductTypeEnum::Default->value;
+      return $this->product_type != ProductTypeEnum::Deposit->value && ProductTypeEnum::isDigital($this->product_type);
    }
    public function getIsDigitalVideoAttribute()
    {

@@ -100,7 +100,6 @@ export default {
                tmp += `Invoice : *${this.order.order_ref}*\n`
                tmp += `Tanggal : ${this.dateFormat(this.order.created_at)}\n`
                tmp += `Subtotal : ${this.moneyIdr(this.order.order_subtotal)}\n`
-               tmp += `Ongkos Kirim : ${this.moneyIdr(this.order.shipping_cost)}\n`
 
                if (this.order.order_unique_code) {
                   tmp += `Kode Unik : ${this.order.order_unique_code}\n`

@@ -21,11 +21,9 @@ class ProductVarian extends Model
         'has_subvarian',
         'varian_id',
         'product_id',
-        'weight'
     ];
     protected $casts = [
         'has_subvarian' => 'boolean',
-        'weight' => 'integer',
         'stock' => 'integer',
         'price' => 'integer',
     ];

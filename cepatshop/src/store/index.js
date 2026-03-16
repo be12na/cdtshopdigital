@@ -138,16 +138,6 @@ export default store(function (/* { ssrContext } */) {
                group: 'affiliate',
                active: false
             },
-
-            {
-               label: "Alamat",
-               caption: "Alamat Pengiriman",
-               path: "CustomerAddress",
-               icon: "contact_mail",
-               color: "green",
-               group: '',
-               active: true
-            },
             {
                label: "Ulasan",
                caption: "Ulasan Produk",

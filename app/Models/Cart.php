@@ -16,7 +16,6 @@ class Cart extends Model
       'sku',
       'price',
       'quantity',
-      'weight',
       'image_url',
       'product_url',
       'product_stock',
@@ -25,11 +24,6 @@ class Cart extends Model
       'product_type',
       'affiliate_code'
    ];
-
-   public function sumWeight()
-   {
-      return $this->weigth * $this->quantity;
-   }
    public function sumPrice()
    {
       return $this->price * $this->quantity;

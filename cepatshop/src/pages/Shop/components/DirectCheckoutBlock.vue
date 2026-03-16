@@ -8,8 +8,6 @@
                   :rules="[val => val && val.length > 0 || 'Wajib diisi']" />
                <q-input dense v-model="form.customer_whatsapp" label="Nomor Whatsapp*" placeholder="081234567890"
                   :rules="[val => val && val.length > 0 || 'Wajib diisi']" />
-               <q-input dense label="Alamat" v-model="form.address"
-                  :rules="[val => val && val.length > 0 || 'Wajib diisi']"></q-input>
                <div class="q-pa-sm bg-grey-2 q-mt-sm" v-html="cartFormat"></div>
             </q-card-section>
             <q-card-actions class="justify-end q-pa-md">
@@ -48,7 +46,6 @@ export default {
          form: {
             customer_name: '',
             customer_whatsapp: '',
-            address: '',
          }
       }
    },
@@ -62,7 +59,7 @@ export default {
          return this.$store.state.session_id
       },
       canDirectCheckout() {
-         return this.carts.length && this.form.customer_name && this.form.customer_whatsapp && this.form.address && this.shop.phone ? true : false
+         return this.carts.length && this.form.customer_name && this.form.customer_whatsapp && this.shop.phone ? true : false
       }
    },
    mounted() {
@@ -93,7 +90,7 @@ export default {
             numb++
          })
 
-         str += `Total: *${this.moneyIdr(this.sumTotal())}*\n------------------------\n\n*Nama:*\n ${this.form.customer_name} (${this.form.customer_whatsapp})\n\n*Alamat:*\n${this.form.address}\n\n`
+         str += `Total: *${this.moneyIdr(this.sumTotal())}*\n------------------------\n\n*Nama:*\n ${this.form.customer_name} (${this.form.customer_whatsapp})\n\n`
 
          let link = this.currentWhatsappUrl + '/send?phone=' + shopPhone + '&text=' + encodeURI(str);
 
@@ -129,14 +126,7 @@ export default {
          return this.carts[0].quantity * this.carts[0].price
       },
       sumWeight() {
-         if (this.carts.length > 1) {
-            let w = [];
-            this.carts.forEach(el => {
-               w.push(el.weight * el.quantity)
-            });
-            return w.reduce((a, b) => a + b)
-         }
-         return this.carts[0].quantity * this.carts[0].weight
+         return 0
       },
       sumTotal() {
          return this.sumSubtotal()

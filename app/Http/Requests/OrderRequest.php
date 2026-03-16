@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Product;
+use App\Enums\ProductTypeEnum;
 use Illuminate\Foundation\Http\FormRequest;
 
 class OrderRequest extends FormRequest
@@ -25,7 +25,7 @@ class OrderRequest extends FormRequest
    public function rules()
    {
       $rule = [
-         'product_type' => ['required'],
+         'product_type' => ['nullable'],
          'customer_name' => ['required', 'string'],
          'customer_phone' => ['required', 'string'],
          'customer_email' => ['nullable', 'email'],
@@ -35,29 +35,21 @@ class OrderRequest extends FormRequest
          'payment_code' => ['nullable'],
          'order_items' => ['required', 'array'],
          'order_qty' => ['required', 'numeric'],
-         'order_weight' => ['required', 'numeric'],
          'order_unique_code' => ['required', 'numeric'],
          'order_subtotal' => ['required', 'numeric'],
-         'order_total' => ['required', 'numeric'],
          'grand_total' => ['required', 'numeric'],
-         'shipping_address' => ['required'],
-         'shipping_courier_id' => ['required'],
-         'shipping_courier_name' => ['required'],
-         'shipping_courier_service' => ['required'],
-         'shipping_cost' => ['required', 'numeric'],
          'payment_fee' => ['required', 'numeric'],
          'service_fee' => ['required', 'numeric'],
          'voucher_discount' => ['required', 'numeric'],
-         'shipping_discount' => ['required', 'numeric'],
       ];
 
-      if (request()->get('product_type') != Product::PRODUCT_DEFAULT) {
-         $rule['shipping_address']           = ['nullable'];
-         $rule['shipping_courier_id']        = ['nullable'];
-         $rule['shipping_courier_name']      = ['nullable'];
-         $rule['shipping_courier_service']   = ['nullable'];
-      }
-
       return $rule;
+   }
+
+   protected function prepareForValidation(): void
+   {
+      $this->merge([
+         'product_type' => $this->product_type ?? ProductTypeEnum::Digital->value,
+      ]);
    }
 }

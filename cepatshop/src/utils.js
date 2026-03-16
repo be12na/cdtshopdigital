@@ -35,7 +35,7 @@ function getColorBadge(str) {
    if (str == 'payment_submitted') return 'blue'
    if (str == 'success' || str == 'complete' || str == 'completed' || str == 'credit') return 'green'
    if (str == 'failed' || str == 'debit' || str == 'debet' || str == 'expired' || str == 'canceled' || str == 'cancelled') return 'red'
-   if (str == 'shipping' || str == 'paid') return 'teal'
+   if (str == 'to_process' || str == 'paid') return 'teal'
    if (str == 'process') return 'blue'
 
    return 'grey-8'
@@ -66,16 +66,13 @@ function getOrderStatusColor(status) {
    if (['PAYMENT_SUBMITTED'].includes(status)) {
       return 'blue'
    }
-   if (['AWAITING_PICKUP', 'SHIPPING'].includes(status)) {
-      return 'teal'
-   }
    if (['COMPLETE', 'PAID', 'Sent'].includes(status)) {
       return 'green'
    }
    if (['CANCELED', 'EXPIRED', 'Failed'].includes(status)) {
       return 'red'
    }
-   if (['TOSHIP', 'TO_PROCESS', 'PROCESS'].includes(status)) {
+   if (['TO_PROCESS', 'PROCESS'].includes(status)) {
       return 'amber-8'
    }
    return 'grey-7'
@@ -147,19 +144,16 @@ function getRandomString(numb = 28) {
 
 function getStatusIcon(status) {
    let icon = ''
-   if (status == 'TOSHIP') {
-      return 'move_to_inbox'
-   }
    if (status == 'PENDING') {
       return 'payments'
    }
-   if (status == 'SHIPPING') {
-      return 'local_shipping'
+   if (status == 'TO_PROCESS') {
+      return 'av_timer'
    }
-   if (status == 'CAOMPLETE') {
+   if (status == 'COMPLETE') {
       return 'receipt_long'
    }
-   if (status == 'CANCELLED') {
+   if (status == 'CANCELED') {
       return 'production_quantity_limits'
    }
    return icon

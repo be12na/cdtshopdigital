@@ -27,19 +27,20 @@ class CartController extends Controller
    {
       Cart::where('created_at', '<', Carbon::now()->subHours(2))->delete();
 
-      $request->validate([
+      $validated = $request->validate([
          'price' => 'required|numeric',
          'name' => 'required',
          'quantity' => 'required|numeric',
-         'weight' => 'required|numeric',
          'sku' => 'required',
          'product_stock' => 'required',
-         'product_type' => 'required',
+         'product_type' => 'nullable',
          'image_url' => 'nullable',
          'product_url' => 'nullable',
          'affiliate_code' => 'nullable',
       ]);
 
+      $productType = $validated['product_type'] ?? Product::PRODUCT_DIGITAL;
+      $request->merge(['product_type' => $productType]);
 
       if ($request->product_type == Product::PRODUCT_DEPOSIT) {
          Cart::query()->delete();
@@ -57,7 +58,6 @@ class CartController extends Controller
          $data = Cart::create([
             'price' => $request->price,
             'name' => $request->name,
-            'weight' => $request->weight,
             'quantity' => $request->quantity,
             'sku' => $request->sku,
             'image_url' => $request->image_url,

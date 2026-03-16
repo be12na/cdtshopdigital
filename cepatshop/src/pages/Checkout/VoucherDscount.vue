@@ -45,12 +45,6 @@
                            @click="selectVoucher(item)">
                            <q-item-section avatar>
                               <div class="text-white text-weight-bold text-center voucher-avatar"
-                                 v-if="item.is_type_shipping"
-                                 :class="selisih_minimum_tarnsaksi(item) == 0 ? 'bg-teal' : 'bg-grey-6'">
-                                 <q-item-label class="text-md">Gratis</q-item-label>
-                                 <q-item-label>Ongkir</q-item-label>
-                              </div>
-                              <div class="text-white text-weight-bold text-center voucher-avatar" v-else
                                  :class="selisih_minimum_tarnsaksi(item) == 0 ? 'bg-amber-9' : 'bg-grey-6'">
                                  <q-item-label class="text-md">Voucher</q-item-label>
                                  <q-item-label>Belanja</q-item-label>
@@ -98,11 +92,7 @@ export default {
       },
       rendered_vouchers() {
          if (this.all_vouchers.length && this.cart_order_form) {
-            if (this.cart_order_form.is_digital) {
-               return this.all_vouchers.filter(el => !el.is_type_shipping)
-            } else if (this.cart_order_form.is_default) {
-               return this.all_vouchers
-            }
+            return this.all_vouchers
          }
          return []
       }

@@ -20,7 +20,7 @@ class PublicProductService
 
          return Product::with([
             'assets',
-            'varianItemSortByPrice:id,product_id,label,value,price,sku,stock,varian_id,weight',
+            'varianItemSortByPrice:id,product_id,label,value,price,sku,stock,varian_id',
             'varianAttributes:id,product_id,label,value',
             'productPromo' => function ($query) {
                $query->whereHas('promoActive');

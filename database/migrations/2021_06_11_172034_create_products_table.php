@@ -23,7 +23,6 @@ class CreateProductsTable extends Migration
             $table->integer('sold')->nullable();
             $table->boolean('status')->default(true);
             $table->foreignId('category_id')->nullable();
-            $table->integer('weight')->default(1000);
             $table->timestamps();
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('set null');
         });

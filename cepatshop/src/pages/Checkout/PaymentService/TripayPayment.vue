@@ -42,17 +42,6 @@ export default {
       user() {
          return this.$store.state.user.user
       },
-      can_select_payment() {
-         if (this.cart_order_form.is_digital) {
-            return true
-         }
-         if (this.cart_order_form.customer) {
-            return true
-         }
-
-         return false
-      },
-
       errors() {
          return this.$store.state.errors;
       },

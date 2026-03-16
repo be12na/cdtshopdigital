@@ -32,13 +32,8 @@ class DashboardController extends Controller
             ),
             DB::raw(
                "SUM(CASE
-                  WHEN orders.order_status = 'TOSHIP' OR orders.order_status = 'TO_PROCESS'
+                  WHEN orders.order_status = 'TO_PROCESS'
                   THEN 1 ELSE 0 END) AS 'order_toship'"
-            ),
-            DB::raw(
-               "SUM(CASE
-                  WHEN orders.order_status = 'SHIPPING' OR orders.order_status = 'AWAITING_PICKUP'
-                  THEN 1 ELSE 0 END) AS 'order_shipping'"
             ),
             DB::raw(
                "SUM(CASE
@@ -69,16 +64,9 @@ class DashboardController extends Controller
                ],
 
                [
-                  'label' => 'Perlu Diproses/kirim',
+                  'label' => 'Perlu Diproses',
                   'total' => $report->order_toship ?? 0,
                   'color' => 'orange',
-                  'icon' => 'receipt'
-               ],
-
-               [
-                  'label' => 'Sedang Dikirim',
-                  'total' => $report->order_shipping ?? 0,
-                  'color' => 'teal',
                   'icon' => 'receipt'
                ],
 
@@ -117,7 +105,7 @@ class DashboardController extends Controller
          function () use ($request) {
             return DB::table('orders')->select(
                DB::raw("SUM(orders.order_total + orders.payment_fee) AS 'total'"),
-               DB::raw("SUM(transactions.fee_merchant + orders.shipping_discount) AS 'expenses'"),
+               DB::raw("SUM(transactions.fee_merchant) AS 'expenses'"),
             )
                ->join('transactions', 'transactions.order_id', 'orders.id')
                ->where('transactions.status', 'PAID')
@@ -156,7 +144,7 @@ class DashboardController extends Controller
                         'total' => $expenses,
                         'color' => 'red',
                         'icon' => 'monetization_on',
-                        'desc' => 'Diskon Ongkir dan Layanan payment gateway'
+                        'desc' => 'Layanan payment gateway'
                      ],
                      [
                         'label' => 'Total Penghasilan',

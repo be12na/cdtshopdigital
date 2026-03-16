@@ -54,8 +54,8 @@ export default {
          notFound: false,
          container: null,
          loading: false,
-         icon_admin: "/static/warehouse.png",
-         icon_client: "/static/delivery.png",
+         icon_admin: "/static/location.png",
+         icon_client: "/static/location.png",
          circle: null
       }
    },

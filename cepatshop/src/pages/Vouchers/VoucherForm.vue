@@ -10,7 +10,7 @@
             <q-card-section>
 
                <div class="">
-                  <div class="flex no-wrap q-gutter-sm q-mb-md" v-if=!form.is_type_shipping>
+                  <div class="flex no-wrap q-gutter-sm q-mb-md">
                      <q-card flat bordered :class="{ 'card-active': form.discount_type == 'nominal' }"
                         class="cursor-pointer card-select" @click="form.discount_type = 'nominal'">
                         <q-card-section class="q-pa-sm">
@@ -147,7 +147,6 @@ export default {
             max_discount_amount: 0,
             min_transaction: 0,
             usage_quota: 0,
-            is_type_shipping: false,
          },
          is_loading: false,
          timeout: null
@@ -156,9 +155,6 @@ export default {
    mounted() {
       if (this.$route.name == 'VoucherEdit') {
          this.getData()
-      }
-      if (this.$route.query.is_type_shipping) {
-         this.form.is_type_shipping = true
       }
       this.getVoucherCode()
    },

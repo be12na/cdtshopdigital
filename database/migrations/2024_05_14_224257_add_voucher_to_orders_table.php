@@ -15,7 +15,6 @@ class AddVoucherToOrdersTable extends Migration
    {
       Schema::table('orders', function (Blueprint $table) {
          $table->integer('voucher_discount')->default(0);
-         $table->integer('shipping_discount')->default(0);
       });
    }
 
@@ -28,7 +27,6 @@ class AddVoucherToOrdersTable extends Migration
    {
       Schema::table('orders', function (Blueprint $table) {
          $table->dropColumn('voucher_discount');
-         $table->dropColumn('shipping_discount');
       });
    }
 }

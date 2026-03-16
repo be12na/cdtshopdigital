@@ -73,10 +73,6 @@
                   <div class="col">
                      <money-formatter required outlined v-model="form.stock" label="Stok" stack-label/>
                   </div>
-                  <div class="col" v-if="!is_product_digital">
-                     <q-input type="number" min="50" required outlined v-model="form.weight" label="Berat" stack-label
-                        suffix="Gram" />
-                  </div>
                </div>
                <!-- <div class="text-amber-9 q-pa-xs q-mt-sm">* Input stok -1 untuk unlimited stok</div> -->
             </q-card-section>
@@ -149,12 +145,6 @@
 
                                     <q-item-section>
                                        <q-item-label class="q-mb-xs">
-                                          <q-input type="number" min="50" stack-label required
-                                             :disable="is_product_digital"
-                                             v-model="form.varians[varIndex].subvarian[subIndex].weight" label="Berat"
-                                             suffix="Gram" />
-                                       </q-item-label>
-                                       <q-item-label>
                                           <money-formatter stack-label required
                                              v-model="form.varians[varIndex].subvarian[subIndex].stock" label="Stok" />
 
@@ -196,11 +186,6 @@
                                  </q-item-section>
                                  <q-item-section>
                                     <q-item-label class="q-mb-xs">
-                                       <q-input type="number" min="50" stack-label required
-                                          :disable="is_product_digital" v-model="form.varians[vIndex].weight"
-                                          label="Berat" suffix="Gram" />
-                                    </q-item-label>
-                                    <q-item-label>
                                        <money-formatter stack-label required v-model="form.varians[vIndex].stock"
                                           label="Stok" />
                                     </q-item-label>
@@ -302,7 +287,6 @@ export default {
          form: {
             title: '',
             price: 0,
-            weight: 0,
             stock: 0,
             description: '',
             category_id: '',
@@ -311,7 +295,7 @@ export default {
             has_subvarian: false,
             simple_product: true,
             marketplaces: [],
-            product_type: 'Default',
+            product_type: 'Digital',
             aff_is_active: false,
             aff_is_percentage: false,
             aff_amount: 0,
@@ -432,7 +416,7 @@ export default {
       pushSubVarian(varIndex) {
          let varian = this.form.varians[varIndex]
 
-         let tpl = { label: varian.subvarian[0].label, value: '', stock: 0, price: varian.price ?? 0, weight: varian.weight ?? 0 }
+         let tpl = { label: varian.subvarian[0].label, value: '', stock: 0, price: varian.price ?? 0 }
 
          this.form.varians[varIndex].subvarian.push(tpl)
 
@@ -447,7 +431,7 @@ export default {
          }, 500)
       },
       pushVarian() {
-         this.form.varians.push({ has_subvarian: false, label: this.form.varians[0].label, value: '', stock: 0, price: this.form.price ?? 0, weight: this.form.weight ?? 0 })
+         this.form.varians.push({ has_subvarian: false, label: this.form.varians[0].label, value: '', stock: 0, price: this.form.price ?? 0 })
 
          setTimeout(() => {
             let col = document.querySelectorAll('.single-varian')
@@ -461,7 +445,6 @@ export default {
       },
       addVarianProduk(data) {
          let defaultPrice = this.form.price ?? 0;
-         let weight = this.form.weight ?? 0;
          let stock = this.form.stock ?? 0;
 
          if (this.form.has_subvarian) {
@@ -470,7 +453,7 @@ export default {
                let varian = { has_subvarian: true, label: data.tempVarian.label, value: v, subvarian: [] }
 
                data.tempSubvarian.value.forEach(el => {
-                  let sub = { label: data.tempSubvarian.label, value: el, stock: stock, price: defaultPrice, weight: weight }
+                  let sub = { label: data.tempSubvarian.label, value: el, stock: stock, price: defaultPrice }
                   varian.subvarian.push(sub)
                })
 
@@ -481,7 +464,7 @@ export default {
 
             data.tempVarian.value.forEach(val => {
                this.form.varians.push({
-                  has_subvarian: false, label: data.tempVarian.label, value: val, stock: stock, price: defaultPrice, weight: weight
+                  has_subvarian: false, label: data.tempVarian.label, value: val, stock: stock, price: defaultPrice
                })
 
             })
@@ -507,8 +490,7 @@ export default {
                   label: el.label,
                   value: el.value,
                   stock: el.stock,
-                  price: el.price,
-                  weight: el.weight
+                  price: el.price
                }
                newTpl.subvarian.push(sub)
             })
@@ -519,8 +501,7 @@ export default {
                label: varian.label,
                value: '',
                stock: varian.stock,
-               price: varian.price,
-               weight: varian.weight
+               price: varian.price
             }
          }
 

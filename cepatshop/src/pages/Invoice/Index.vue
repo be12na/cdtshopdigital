@@ -92,14 +92,8 @@ export default {
                )}`;
             }
 
-            if (this.invoice.order_status == "TOSHIP") {
-               str = "Pesanan sedang dikemas menunggu diserahkan ke ekspedisi.";
-            }
-            if (this.invoice.order_status == "SHIPPING") {
-               str = "Pesanan sedang dalam pengiriman";
-               if (this.invoice.transaction.payment_type == "COD") {
-                  str += ", Silahkan lakukan pembayaran saat terima pesanan.";
-               }
+            if (this.invoice.order_status == "TO_PROCESS") {
+               str = "Pesanan sedang diproses.";
             }
 
             if (this.invoice.order_status == "COMPLETE") {

@@ -74,15 +74,6 @@ class GenerateDefaultNotification extends Command
             "sort" => 2
          ],
          [
-            "event" => NotificationTemplate::ORDER_SHIPPING,
-            "role" => "Customer",
-            "label" => "Pesanan dikirim",
-            "subject" => "Pesanan dikirim",
-            "template" => "Halo kak {{ user_name }},\nPesanan  {{ invoice_number }}  sedang dalam pengiriman\nInvoice Link:\n {{ invoice_link }}\n\nRegards,\n{{ shop_name }}",
-            "via" => Message::VIA_EMAIL,
-            "sort" => 3
-         ],
-         [
             "event" => NotificationTemplate::ORDER_PAYMENT_SUBMITED,
             "role" => "Admin",
             "label" => "Payment Submited",
@@ -90,15 +81,6 @@ class GenerateDefaultNotification extends Command
             "template" => "Customer telah melakukan pembayaran atas pesanan  {{ invoice_number }}",
             "via" => Message::VIA_EMAIL,
             "sort" => 3
-         ],
-         [
-            "event" =>  NotificationTemplate::ORDER_SHIPPING,
-            "role" => "Admin",
-            "label" => "Pesanan Dikirim",
-            "subject" => "Pesanan Dikirim",
-            "template" => "Pesanan sedang kirim\n\nInvoice:   {{ invoice_number }} \nNo Resi:  {{ resi_number }} \n\nLink:  {{ invoice_link }}",
-            "via" => Message::VIA_EMAIL,
-            "sort" => 4
          ],
          [
             "event" =>  NotificationTemplate::ORDER_COMPLETED,

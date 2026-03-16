@@ -52,12 +52,7 @@
                   <div>Metode Pembayaran</div>
                   <q-btn flat icon="close" v-close-popup color="white"></q-btn>
                </div>
-               <div class="text-center q-py-xl margin-auto" v-if="!can_select_payment">
-                  <div class="text-md text-weight-bold">Alamat pengiriman belum dipilih</div>
-                  <div class="text-grey-8">Silahkan pilih alamat pengiriman terlebih dahulu</div>
-               </div>
-
-               <div v-else>
+               <div>
                   <q-list separator>
                      <DirectPayment :payment_chanels="direct_payments" @onClose="closeModal"></DirectPayment>
                      <TripayPayment :payment_chanels="payment_chanels" v-if="is_tripay_payment" @onClose="closeModal"></TripayPayment>
@@ -124,17 +119,6 @@ export default {
       user() {
          return this.$store.state.user.user
       },
-      can_select_payment() {
-         if (this.cart_order_form.is_digital) {
-            return true
-         }
-         if (this.cart_order_form.customer) {
-            return true
-         }
-
-         return false
-      },
-
       errors() {
          return this.$store.state.errors;
       },

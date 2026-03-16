@@ -57,10 +57,6 @@ export default {
 
       commit('SET_LOADING', false)
    },
-   searchAddress({ }, keyword) {
-      return Api.get('shipping/searchAddress?q=' + keyword)
-   },
-
    dispatchEvent({ }, event) {
       setTimeout(() => {
          Api.post('dispatchEvent', { event: event })

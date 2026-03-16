@@ -164,20 +164,6 @@
                         <q-item-label caption>Voucher diskon untuk transaksi pembelian</q-item-label>
                      </q-item-section>
                   </q-item>
-                  <q-item clickable @click="
-                     $router.push({
-                        name: 'VoucherCreate',
-                        query: { is_type_shipping: true },
-                     })
-                     ">
-                     <q-item-section avatar>
-                        <q-icon color="teal" name="local_shipping" size="xl"></q-icon>
-                     </q-item-section>
-                     <q-item-section>
-                        <div class="text-md">Voucher Ongkos Kirim</div>
-                        <q-item-label caption>Voucher diskon untuk ongkos kirim</q-item-label>
-                     </q-item-section>
-                  </q-item>
                </q-list>
             </q-card-section>
          </q-card>

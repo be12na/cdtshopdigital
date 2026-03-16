@@ -47,9 +47,6 @@ export function statusOptions({ }) {
 export function acceptPayment({ }, id) {
    return BaseApi.post(`orders/${id}/accept-payment`)
 }
-export function shippingOrder({ }, id) {
-   return BaseApi.post(`orders/${id}/ship`)
-}
 export function completionOrder({ }, id) {
    return BaseApi.post(`orders/${id}/complete`)
 }
@@ -57,19 +54,9 @@ export function cancelOrder({ }, params) {
    return BaseApi.post(`orders/${params.order_id}/cancel`, params)
 }
 
-export function inputResi({ }, params) {
-   return BaseApi.post(`orders/${params.order_id}/input-resi`, params)
-}
-export function updateStatusOrder({ }, params) {
-   return BaseApi.post(`order/${params.id}/update-status`, params)
-}
-
 export function getInvoice({ }, order_ref) {
    return Api.get('invoice/' + order_ref)
 }
 export function storeOrder({ }, payload) {
    return Api.post('storeorder', payload)
-}
-export function shippingWaybill({ }, waybill) {
-   return Api.get('shipping/tracking/' + waybill)
 }

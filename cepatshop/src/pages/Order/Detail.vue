@@ -70,15 +70,8 @@ export default {
                   this.invoice.transaction.expired_time
                )}`;
             }
-
-            if (this.invoice.order_status == "TOSHIP") {
-               str = `Segera kemas pesanan dan kirim ke konsumen via ${this.invoice.shipping_courier_name}`;
-            }
-            if (this.invoice.order_status == "SHIPPING") {
-               str = "Pesanan sedang dalam pengiriman";
-               if (this.invoice.transaction.payment_type == "COD") {
-                  str += ", Konsumen harus membayar pesanan ketika pesanan tiba.";
-               }
+            if (this.invoice.order_status == "TO_PROCESS") {
+               str = "Pesanan sedang diproses.";
             }
 
             if (this.invoice.order_status == "COMPLETE") {
@@ -100,10 +93,10 @@ export default {
    },
 
    methods: {
-      ...mapActions("order", ["shippingWaybill", 'acceptPayment']),
+      ...mapActions("order", ['acceptPayment']),
       getPrintPath() {
          let props = this.$router.resolve({
-            name: "OrderPrintLabel",
+            name: "OrderPrint",
             params: { order_ref: this.invoice.order_ref },
          });
 
@@ -173,7 +166,7 @@ export default {
          this.modalPayment = true;
       },
       copyAddress() {
-         let addr = `${this.invoice.customer_name}\n${this.invoice.customer_whatsapp}\n${this.invoice.shipping_address}`;
+         let addr = `${this.invoice.customer_name}\n${this.invoice.customer_whatsapp}`;
          this.copy(addr);
       },
 

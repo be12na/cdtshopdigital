@@ -22,15 +22,9 @@ class CreateConfigsTable extends Migration
          $table->boolean('is_whatsapp_checkout')->default(false);
          $table->boolean('is_guest_checkout')->default(false);
          $table->boolean('is_payment_gateway')->default(false);
-         $table->text('cod_list')->nullable();
          $table->boolean('is_notifypro')->default(false);
          $table->tinyInteger('notifypro_interval')->default(20);
          $table->tinyInteger('notifypro_timeout')->default(4);
-         $table->string('rajaongkir_type')->default('starter');
-         $table->string('rajaongkir_apikey')->nullable()->default('e7495ac700145ab33b3af06bb159ac83');
-         $table->string('rajaongkir_couriers')->nullable();
-         $table->integer('warehouse_id')->nullable();
-         $table->text('warehouse_address')->nullable();
          $table->string('telegram_bot_token')->nullable();
          $table->string('telegram_user_id')->nullable();
          $table->string('tripay_api_key')->nullable();

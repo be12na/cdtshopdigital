@@ -13,9 +13,6 @@ const props = defineProps(['invoice'])
 const router = useRouter()
 
 const qrData = ref(null)
-const is_waybill_loading = ref(false)
-const trackingModal = ref(false)
-const order_waybill = ref(null)
 const buktiModal = ref(false)
 
 const shop = computed(() => store.state.shop)
@@ -48,34 +45,6 @@ const generateQr = () => {
 }
 const goToUrl = (url) => {
    window.location.href = url;
-}
-const lacakPengiriman = () => {
-   if (order_waybill.value) {
-      trackingModal.value = true;
-   } else {
-      is_waybill_loading.value = true;
-
-      store.dispatch("order/shippingWaybill", props.invoice.id)
-         .then((res) => {
-            let data = res.data;
-            if (!data.data) {
-               Notify.create(res.data.message);
-            } else {
-               order_waybill.value = res.data.data;
-               trackingModal.value = true;
-            }
-         })
-         .finally(() => {
-            is_waybill_loading.value = false;
-         });
-   }
-}
-const copyAddress = () => {
-   let addr = `${props.invoice.customer_name}\n${props.invoice.customer_whatsapp}\n${props.invoice.shipping_address}`;
-   if (props.invoice.shipping_coordinate) {
-      addr += `\nKoordinat (Lat/Lng): ${props.invoice.shipping_coordinate}`
-   }
-   copyString(addr);
 }
 
 const getData = () => {
@@ -224,19 +193,6 @@ onBeforeUnmount(() => {
                      <q-item-section style="max-width: 180px" top>Tanggal Pembelian</q-item-section>
                      <q-item-section>{{ dateParse(invoice.created_at) }}</q-item-section>
                   </q-item>
-
-                  <q-item dense v-if="invoice.shipping_at">
-                     <q-item-section style="max-width: 180px" top>Tanggal Pengiriman</q-item-section>
-                     <q-item-section>{{
-                        dateParse(invoice.shipping_at)
-                     }}</q-item-section>
-                  </q-item>
-                  <q-item dense v-if="invoice.received_at">
-                     <q-item-section style="max-width: 180px" top>Tanggal Terkirim</q-item-section>
-                     <q-item-section>{{
-                        dateParse(invoice.received_at)
-                     }}</q-item-section>
-                  </q-item>
                   <q-item dense class="q-px-xs">
                      <q-item-section style="max-width: 180px" top>Total Pembayaran</q-item-section>
                      <q-item-section>
@@ -293,50 +249,21 @@ onBeforeUnmount(() => {
          </q-card>
 
          <div
-            v-if="invoice.transaction.status == 'UNPAID' && $route.name == 'UserInvoice' && !['COD', 'CASH'].includes(invoice.transaction.payment_type)">
+            v-if="invoice.transaction.status == 'UNPAID' && $route.name == 'UserInvoice'">
             <PaymentInstruction :invoice="invoice"></PaymentInstruction>
          </div>
 
-         <q-card class="section shadow q-mt-md" square v-if="invoice.product_type == 'Default'">
-            <q-card-section>
-               <div class="card-subtitle flex justify-between items-center">
-                  <div>Informasi Pengiriman</div>
-                  <q-btn v-if="invoice.can_check_waybill" label="HISTORY" flat @click="lacakPengiriman" color="teal"
-                     padding="3px 12px" :loading="is_waybill_loading"></q-btn>
-               </div>
-               <div>{{ invoice.shipping_courier_name }}</div>
-               <div class="text-grey-7 text-13">
-                  {{ invoice.shipping_courier_service }}
-               </div>
-               <div v-if="invoice.shipping_courier_code" class="flex items-center">
-                  <div style="line-height: normal">
-                     {{ invoice.shipping_courier_code }}
-                  </div>
-                  <q-btn label="salin" padding="2px 12px" flat color="teal"
-                     @click="copyString(invoice.shipping_courier_code)"></q-btn>
-               </div>
-            </q-card-section>
-         </q-card>
          <q-card class="section shadow q-mt-md" square>
             <q-card-section>
                <div class="card-subtitle flex justify-between items-center">
                   <div>Detail Customer</div>
-
-                  <q-btn flat label="salin" @click="copyAddress" color="teal" padding="3px 12px"></q-btn>
+                  <q-btn flat label="salin" @click="copyString(`${invoice.customer_name}\n${invoice.customer_whatsapp}`)" color="teal" padding="3px 12px"></q-btn>
                </div>
                <div>
                   <div class="flex justify-between">
                      <div class="text-weight-medium">{{ invoice.customer_name }}</div>
                   </div>
                   <div>{{ invoice.customer_whatsapp }}</div>
-                  <div v-html="invoice.shipping_address"></div>
-                  <div class="q-mt-xs" v-if="invoice.shipping_coordinate">
-                     <div>Koordinat (Lat/Lng) : {{ invoice.shipping_coordinate ? invoice.shipping_coordinate : '-' }}
-                        <q-btn v-if="invoice.shipping_coordinate" unelevated padding="0px 6px" color="green-1"
-                           text-color="teal" class="q-ml-sm" no-caps
-                           @click="copyString(invoice.shipping_coordinate)">salin</q-btn>
-                     </div>
-                  </div>
                </div>
             </q-card-section>
          </q-card>
@@ -386,16 +313,6 @@ onBeforeUnmount(() => {
                   <q-item dense class="q-px-none" v-if="invoice.voucher_discount">
                      <q-item-section>Voucher Belanja</q-item-section>
                      <q-item-section side>-{{ moneyFormat(invoice.voucher_discount) }} IDR</q-item-section>
-                  </q-item>
-                  <q-item dense class="q-px-none" v-if="invoice.product_type == 'Default'">
-                     <q-item-section>
-                        Biaya Pengiriman ({{ invoice.order_weight }}gram)
-                     </q-item-section>
-                     <q-item-section side>{{ moneyFormat(invoice.shipping_cost) }} IDR</q-item-section>
-                  </q-item>
-                  <q-item dense class="q-px-none" v-if="invoice.shipping_discount">
-                     <q-item-section>Diskon Pengiriman</q-item-section>
-                     <q-item-section side>-{{ moneyFormat(invoice.shipping_discount) }} IDR</q-item-section>
                   </q-item>
 
                   <q-item dense class="q-px-none" v-if="invoice.service_fee">
@@ -447,42 +364,6 @@ onBeforeUnmount(() => {
 
       <q-dialog v-model="buktiModal">
          <img :src="invoice.transaction.payment_proof_url" class="payment-proof" />
-      </q-dialog>
-
-      <q-dialog v-model="trackingModal" position="bottom">
-         <q-card class="max-width-mobile" style="min-height: 60vh">
-            <div class="sticky-top box-shadow">
-               <div class="flex justify-between items-center q-px-md q-pb-sm q-pt-md bg-grey-2">
-                  <div>
-                     <div class="text-md2 text-weight-medium">Histori Pesanan</div>
-                     <!-- <div class="text-weight-medium text-md" v-if="order_waybill && order_waybill.shipping_status">
-                        <span class="bg-blue-1 text-blue q-px-xs">
-                           {{ order_waybill.shipping_status }}
-                        </span>
-                     </div> -->
-                  </div>
-                  <q-btn flat icon="close" padding="sm" round v-close-popup></q-btn>
-               </div>
-               <!-- <q-separator></q-separator> -->
-            </div>
-            <q-card-section v-if="order_waybill">
-               <q-timeline color="grey-8">
-                  <q-timeline-entry v-for="(item, idx) in order_waybill.histories" :key="idx"
-                     :subtitle="dateParse(item.date + ' ' + item.time)" :color="idx == 0 ? 'blue' : 'grey-5'">
-                     <div>
-                        <div>{{ item.description }}</div>
-                        <div class="text-grey-7" v-if="item.city_name">
-                           {{ item.city_name }}
-                        </div>
-                     </div>
-                  </q-timeline-entry>
-               </q-timeline>
-
-               <div v-if="!order_waybill.histories.length" class="absolute-center">
-                  Tidak ada data
-               </div>
-            </q-card-section>
-         </q-card>
       </q-dialog>
    </div>
 </template>

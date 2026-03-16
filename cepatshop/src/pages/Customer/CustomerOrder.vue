@@ -31,9 +31,7 @@ export default {
          statuses: [
             { value: 'ALL', label: 'Semua' },
             { value: 'PENDING', label: 'Pending' },
-            { value: 'TOSHIP', label: 'Sedang Diproses' },
-            { value: 'SHIPPING', label: 'Sedang Dikirim' },
-            { value: 'AWAITING_PICKUP', label: 'Belum Diambil' },
+            { value: 'TO_PROCESS', label: 'Sedang Diproses' },
             { value: 'COMPLETE', label: 'Selesai' },
             { value: 'CANCELED', label: 'Batal' }
          ],

@@ -6,15 +6,11 @@ use App\Events\OrderCancelled;
 use App\Models\Order;
 use App\Models\Product;
 use App\Events\OrderPaid;
-use App\Events\OrderFailed;
 use App\Helpers\ApiResponse;
-use App\Jobs\ProcessAffiliateOrderJob;
 use Illuminate\Http\Request;
-use App\Models\ProductVarian;
 use Illuminate\Support\Facades\DB;
 use App\Models\NotificationTemplate;
 use App\Services\Order\OrderService;
-use Illuminate\Support\Facades\Cache;
 
 class OrderController extends Controller
 {
@@ -90,40 +86,6 @@ class OrderController extends Controller
       return ApiResponse::success($data);
    }
 
-   public function inputResi(Request $request)
-   {
-      $request->validate([
-         'order_id' => ['required'],
-         'resi' => ['required'],
-      ]);
-
-      try {
-         $order = Order::findOrFail($request->order_id);
-
-         $order->shipping_courier_code = $request->resi;
-         $order->updated_at = now();
-
-         $event = null;
-
-         if ($request->boolean('update_to_ship')) {
-            $order->shipping_at = now();
-            $order->order_status = 'SHIPPING';
-            $order->pushHistory('Pesanan dikirim');
-            $event = NotificationTemplate::ORDER_SHIPPING;
-
-            $order->dispatchEventMessage($event);
-         }
-
-         $order->save();
-
-         return ApiResponse::withEvent($event)->success();
-      } catch (\Throwable $th) {
-         // $order->dispatchEventMessage($event);
-
-         return ApiResponse::failed($th);
-      }
-   }
-
    public function updateStatusOrder(Request $request)
    {
       $request->validate([
@@ -132,25 +94,15 @@ class OrderController extends Controller
       ]);
 
       $order = Order::find($request->order_id);
-      $order->order_status = $request->status;
-      $order->updated_at = now();
-
-      $order->save();
-
       $event = null;
 
-      if ($request->status == 'SHIPPING') {
-         $order->pushHistory('Pesanan dikirim');
-         $event = NotificationTemplate::ORDER_SHIPPING;
-      }
       if ($request->status == 'COMPLETE') {
          $event = NotificationTemplate::ORDER_COMPLETED;
-
-         $order->transaction()->update([
-            'status' => 'PAID'
-         ]);
-
-         $order->pushHistory('Pesanan selesai');
+         $this->orderService->completionOrder($order);
+      } else {
+         $order->order_status = $request->status;
+         $order->updated_at = now();
+         $order->save();
       }
 
       if ($order->order_status == 'CANCELED') {
@@ -182,22 +134,6 @@ class OrderController extends Controller
          return ApiResponse::failed($th);
       }
 
-   }
-   public function shipOrder($id)
-   {
-
-      $order = Order::find($id);
-      $event = NotificationTemplate::ORDER_SHIPPING;
-
-      $order->update([
-         'order_status' => Order::SHIPPING
-      ]);
-
-      $order->pushHistory('Pesanan dikirim');
-
-      $order->dispatchEventMessage($event);
-
-      return ApiResponse::withEvent($event)->success($order);
    }
    public function cancelOrder(Request $request, $id)
    {

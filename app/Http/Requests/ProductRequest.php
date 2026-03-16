@@ -28,7 +28,6 @@ class ProductRequest extends FormRequest
       $rules = [
          'title' => 'required|string|max:190',
          'price' => 'required',
-         'weight' => 'required',
          'stock' => 'required',
          'description' => 'required',
          'aff_amount' => 'numeric',
@@ -36,14 +35,15 @@ class ProductRequest extends FormRequest
       ];
       
       if($this->product_type == ProductTypeEnum::DigitalVideo->value) {
-         $rules['weight'] = 'nullable';
          $rules['stock'] = 'nullable';
          $rules['digital_videos'] = ['required', 'array'];
       }
       if($this->product_type == ProductTypeEnum::DigitalDownload->value) {
-         $rules['weight'] = 'nullable';
          $rules['stock'] = 'nullable';
          $rules['digital_downloads'] = ['required', 'array'];
+      }
+      if($this->product_type == ProductTypeEnum::Digital->value) {
+         $rules['stock'] = 'nullable';
       }
 
       return $rules;
@@ -59,6 +59,7 @@ class ProductRequest extends FormRequest
    {
       $this->merge([
          'title' => strip_tags($this->title),
+         'product_type' => $this->product_type ?? ProductTypeEnum::Digital->value,
       ]);
    }
 }

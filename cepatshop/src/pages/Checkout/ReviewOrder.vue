@@ -11,22 +11,6 @@
                      <q-item-section>Subtotal Produk</q-item-section>
                      <q-item-section side>{{ moneyFormat(cart_order_form.subtotal) }} IDR</q-item-section>
                   </q-item>
-                  <q-item dense v-if="cart_order_form.courier">
-                     <q-item-section>Biaya Pengiriman</q-item-section>
-                     <q-item-section side>
-                        <q-item-label v-if="cart_order_form.courier">
-                           {{ moneyFormat(cart_order_form.courier.price) }} IDR
-
-                        </q-item-label>
-                        <q-item-label v-else>0 IDR</q-item-label>
-                     </q-item-section>
-                  </q-item>
-                  <q-item dense v-if="cart_order_form.shipping_discount">
-                     <q-item-section>
-                        <div clas="text-13 text-green">Diskon Pengiriman</div>
-                     </q-item-section>
-                     <q-item-section side>- {{ moneyFormat(cart_order_form.shipping_discount) }} IDR</q-item-section>
-                  </q-item>
 
                   <q-item dense v-if="cart_order_form.voucher_discount">
                      <q-item-section>
