@@ -21,8 +21,11 @@ class LicenseController extends Controller
             $q->select('id', 'title', 'product_type');
             $q->with('assets');
         }])->where('user_id', $user->id)
-            ->paginate(10)
-            ->withQueryString();
+            ->paginate(10);
+
+        if ($licenses instanceof \Illuminate\Pagination\AbstractPaginator) {
+            $licenses->withQueryString();
+        }
 
         return ApiResponse::success($licenses);
     }

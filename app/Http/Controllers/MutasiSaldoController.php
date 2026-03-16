@@ -16,7 +16,11 @@ class MutasiSaldoController extends Controller
             $q->where('user_id', $request->user_id);
          })
          ->where('category', $category)
-         ->latest()->paginate($request->per_page ?? 10)->withQueryString();
+         ->latest()->paginate($request->per_page ?? 10);
+
+      if ($data instanceof \Illuminate\Pagination\AbstractPaginator) {
+         $data->withQueryString();
+      }
 
       return ApiResponse::success($data);
    }

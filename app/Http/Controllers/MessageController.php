@@ -19,7 +19,11 @@ class MessageController extends Controller
          })
          ->latest()
          ->paginate($request->per_page ?? 10)
-         ->withQueryString();
+         ;
+
+      if ($data instanceof \Illuminate\Pagination\AbstractPaginator) {
+         $data->withQueryString();
+      }
 
       return ApiResponse::success($data);
    }

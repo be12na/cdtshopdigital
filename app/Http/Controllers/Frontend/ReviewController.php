@@ -20,7 +20,11 @@ class ReviewController extends Controller
 
          $is_approved = $request->is_approved ? 1 : 0;
 
-         $data = Review::latest()->where('is_approved', $is_approved)->paginate($request->per_page ?? 8)->withQueryString();
+         $data = Review::latest()->where('is_approved', $is_approved)->paginate($request->per_page ?? 8);
+
+         if ($data instanceof \Illuminate\Pagination\AbstractPaginator) {
+            $data->withQueryString();
+         }
 
          return ApiResponse::success($data);
       } catch (Exception $e) {

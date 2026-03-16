@@ -36,7 +36,11 @@ class OrderController extends Controller
             $instance->where('order_status', $status);
          }
 
-         $data = $instance->paginate($request->per_page ?? 10)->withQueryString();
+         $data = $instance->paginate($request->per_page ?? 10);
+
+         if ($data instanceof \Illuminate\Pagination\AbstractPaginator) {
+            $data->withQueryString();
+         }
 
          return ApiResponse::success($data);
       } catch (\Throwable $th) {

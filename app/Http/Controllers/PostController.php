@@ -31,7 +31,11 @@ class PostController extends Controller
          if ($query == 'promote') {
             $q->promote();
          }
-      })->with('asset')->latest()->paginate($request->per_page ?? 5)->withQueryString();
+      })->with('asset')->latest()->paginate($request->per_page ?? 5);
+
+      if ($posts instanceof \Illuminate\Pagination\AbstractPaginator) {
+         $posts->withQueryString();
+      }
 
       return ApiResponse::success($posts);
    }

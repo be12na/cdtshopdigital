@@ -90,13 +90,17 @@ class PublicProductService
       }])
          ->withSum('varianItems as total_stock', 'stock')
          ->withAvg('reviews', 'rating')
-         ->paginate($per_page)->withQueryString();
+         ->paginate($per_page);
+
+      if ($data instanceof \Illuminate\Pagination\AbstractPaginator) {
+         $data->withQueryString();
+      }
 
       return new ProductListCollection($data);
    }
    public function productRelated($id)
    {
-      $per_page = $request->per_page ?? 8;
+      $per_page = 8;
 
       $cacheKey = 'product_related_' . $id;
 

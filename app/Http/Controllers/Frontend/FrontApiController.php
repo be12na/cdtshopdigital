@@ -175,7 +175,7 @@ class FrontApiController extends Controller
 
       $posts = Cache::remember($cacheKey, now()->addMinutes(5), function () use ($request) {
 
-         return Post::when($request->tags && $request->tags != 'all', function ($q) use ($request) {
+         $data = Post::when($request->tags && $request->tags != 'all', function ($q) use ($request) {
             $q->where('tags', $request->tags);
          })->when($request->q, function ($q) use ($request) {
             if ($request->q == 'listing') {
@@ -185,7 +185,13 @@ class FrontApiController extends Controller
                $q->promote();
             }
          })
-            ->with('asset')->latest()->paginate($request->per_page ?? 6)->withQueryString();
+            ->with('asset')->latest()->paginate($request->per_page ?? 6);
+
+         if ($data instanceof \Illuminate\Pagination\AbstractPaginator) {
+            $data->withQueryString();
+         }
+
+         return $data;
       });
 
       return ApiResponse::success($posts);

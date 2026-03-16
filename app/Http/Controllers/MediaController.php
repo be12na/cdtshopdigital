@@ -18,7 +18,11 @@ class MediaController extends Controller
 
    public function index(Request $request)
    {
-      $data = Asset::latest('id')->whereNull('assetable_id')->paginate($request->per_page ?? 21)->withQueryString();
+      $data = Asset::latest('id')->whereNull('assetable_id')->paginate($request->per_page ?? 21);
+
+      if ($data instanceof \Illuminate\Pagination\AbstractPaginator) {
+         $data->withQueryString();
+      }
 
       return ApiResponse::success($data);
    }

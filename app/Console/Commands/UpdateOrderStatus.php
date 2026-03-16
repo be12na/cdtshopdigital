@@ -49,5 +49,7 @@ class UpdateOrderStatus extends Command
       Transaction::where('payment_type', 'BANK_TRANSFER')->update([
          'payment_type' => Order::PAYMEMT_DIRECT_TRANSFER
       ]);
+
+      return self::SUCCESS;
    }
 }

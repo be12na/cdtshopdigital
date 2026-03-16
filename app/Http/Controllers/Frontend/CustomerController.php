@@ -39,8 +39,11 @@ class CustomerController extends Controller
             }
          })->where('user_id', $request->user()->id)
             ->latest('updated_at')
-            ->paginate($request->per_page ?? 8)
-            ->withQueryString();
+            ->paginate($request->per_page ?? 8);
+
+         if ($data instanceof \Illuminate\Pagination\AbstractPaginator) {
+            $data->withQueryString();
+         }
 
          return ApiResponse::success($data);
       } catch (\Throwable $th) {
@@ -56,8 +59,11 @@ class CustomerController extends Controller
          $data = Review::where('user_id', $request->user()->id)
             ->with('reviewImages')
             ->latest('created_at')
-            ->paginate($request->per_page ?? 10)
-            ->withQueryString();
+            ->paginate($request->per_page ?? 10);
+
+         if ($data instanceof \Illuminate\Pagination\AbstractPaginator) {
+            $data->withQueryString();
+         }
 
          return ApiResponse::success($data);
       } catch (\Throwable $th) {
@@ -208,7 +214,11 @@ class CustomerController extends Controller
          ->when($request->category, function ($q) use ($request) {
             $q->where('category', $request->category);
          })
-         ->latest('id')->paginate($request->per_page ?? 6)->withQueryString();
+         ->latest('id')->paginate($request->per_page ?? 6);
+
+      if ($data instanceof \Illuminate\Pagination\AbstractPaginator) {
+         $data->withQueryString();
+      }
 
       return ApiResponse::success($data);
    }

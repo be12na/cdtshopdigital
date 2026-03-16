@@ -83,11 +83,13 @@ class AffiliateController extends Controller
             $instance->whereIn('orders.order_status', $failedStatuses);
          }
       }
-      $data = $instance->paginate(10)->withQueryString()->toArray();
+      $paginator = $instance->paginate(10);
+      if ($paginator instanceof \Illuminate\Pagination\AbstractPaginator) {
+         $paginator->withQueryString();
+      }
 
-      for ($i = 0; $i < count($data['data']); $i++) {
-
-         $status = $data['data'][$i]->order_status;
+      foreach ($paginator as $item) {
+         $status = $item->order_status;
 
          if (in_array($status, $unpaidStatuses)) {
             $status = "UNPAID";
@@ -99,10 +101,10 @@ class AffiliateController extends Controller
             $status = 'COMPLETED';
          }
 
-         $data['data'][$i]->order_status = $status;
+         $item->order_status = $status;
       }
 
-      return ApiResponse::success($data);
+      return ApiResponse::success($paginator);
    }
 
    public function store(Request $request)
@@ -260,10 +262,16 @@ class AffiliateController extends Controller
             $instance->whereBetween('order_items.created_at', [$from, $to]);
          }
       }
-      $data = $instance->paginate(10)->withQueryString();
+
+      $data = $instance->paginate(10);
+
+      if ($data instanceof \Illuminate\Pagination\AbstractPaginator) {
+         $data->withQueryString();
+      }
 
       return ApiResponse::success($data);
    }
+
    public function leads(Request $request)
    {
 
@@ -332,11 +340,13 @@ class AffiliateController extends Controller
             $instance->whereBetween('orders.created_at', [$from, $to]);
          }
       }
-      $data = $instance->paginate(10)->withQueryString()->toArray();
+      $paginator = $instance->paginate(10);
+      if ($paginator instanceof \Illuminate\Pagination\AbstractPaginator) {
+         $paginator->withQueryString();
+      }
 
-      for ($i = 0; $i < count($data['data']); $i++) {
-
-         $status = $data['data'][$i]->order_status;
+      foreach ($paginator as $item) {
+         $status = $item->order_status;
 
          if (in_array($status, $unpaidStatuses)) {
             $status = "UNPAID";
@@ -348,10 +358,10 @@ class AffiliateController extends Controller
             $status = 'COMPLETED';
          }
 
-         $data['data'][$i]->order_status = $status;
+         $item->order_status = $status;
       }
 
-      return ApiResponse::success($data);
+      return ApiResponse::success($paginator);
    }
 
    public function checkReferalCode(Request $request)
@@ -382,7 +392,11 @@ class AffiliateController extends Controller
             $q->where('status', intval($request->status));
          })
          ->join('users', 'users.id', 'affiliates.user_id')
-         ->paginate($request->per_page ?? 10)->withQueryString();
+         ->paginate($request->per_page ?? 10);
+
+      if ($data instanceof \Illuminate\Pagination\AbstractPaginator) {
+         $data->withQueryString();
+      }
 
       return ApiResponse::success($data);
    }

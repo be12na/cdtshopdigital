@@ -13,7 +13,7 @@ class UserController extends Controller
 
    public function userList(Request $request)
    {
-      $data =  DB::table('users')->select(
+      $data = DB::table('users')->select(
          'users.id',
          'users.role_id',
          'users.name',
@@ -32,8 +32,11 @@ class UserController extends Controller
          })
          ->leftJoin('roles', 'roles.id', 'users.role_id')
          ->orderByRaw('role_id IS NULL ASC, role_id ASC')
-         ->paginate($request->per_page ?? 10)
-         ->withQueryString();
+         ->paginate($request->per_page ?? 10);
+
+      if ($data instanceof \Illuminate\Pagination\AbstractPaginator) {
+         $data->withQueryString();
+      }
       return ApiResponse::success($data);
    }
 
@@ -45,7 +48,11 @@ class UserController extends Controller
          $q->where('name', 'like', '%' . $key . '%')
             ->orWhere('email', 'like', '%' . $key . '%')
             ->orWhere('phone', 'like', '%' . $key . '%');
-      })->paginate($request->per_page ?? 10)->withQueryString();
+      })->paginate($request->per_page ?? 10);
+
+      if ($data instanceof \Illuminate\Pagination\AbstractPaginator) {
+         $data->withQueryString();
+      }
       return ApiResponse::success($data);
    }
 

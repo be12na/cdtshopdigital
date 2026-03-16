@@ -27,7 +27,7 @@ class ProductService
 
    public function index($request)
    {
-      return Product::with(['assets'])
+      $data = Product::with(['assets'])
          ->select(
             'products.id',
             'products.title',
@@ -71,7 +71,13 @@ class ProductService
             }
          })
          // ->toSql();
-         ->paginate($request->per_page ?? 10)->withQueryString();
+         ->paginate($request->per_page ?? 10);
+
+      if ($data instanceof \Illuminate\Pagination\AbstractPaginator) {
+         $data->withQueryString();
+      }
+
+      return $data;
    }
    public function show($id)
    {
