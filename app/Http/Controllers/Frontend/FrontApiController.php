@@ -10,7 +10,6 @@ use App\Models\Slider;
 use App\Models\Voucher;
 use App\Models\Category;
 use App\Models\BankAccount;
-use Illuminate\Support\Str;
 use App\Helpers\ApiResponse;
 use App\Models\AffiliateConfig;
 use App\Models\Marketplace;
@@ -67,8 +66,6 @@ class FrontApiController extends Controller
       $data['product_promo'] = Cache::remember('product_promo', now()->addMinutes(3),  function () {
          return $this->service->getProductPromo();
       });
-
-      $data['sess_id'] = Str::random(49);
 
       return ApiResponse::success($data);
    }

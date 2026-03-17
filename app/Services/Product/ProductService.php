@@ -81,16 +81,18 @@ class ProductService
 
     public function show($id)
     {
-        return Product::with('assets', 'category', 'varians.subvarian', 'links', 'digitalDownloads', 'digitalVideos')
+        $product = Product::with('assets', 'category', 'varians.subvarian', 'links', 'digitalDownloads', 'digitalVideos')
             ->where('id', $id)
             ->first();
+        return $product ? $product->makeVisible(['meta_pixel_capi', 'meta_token', 'meta_test_code']) : null;
     }
 
     public function edit($id)
     {
-        return Product::with('assets', 'category', 'varians.subvarian')
+        $product = Product::with('assets', 'category', 'varians.subvarian')
             ->where('id', $id)
             ->first();
+        return $product ? $product->makeVisible(['meta_pixel_capi', 'meta_token', 'meta_test_code']) : null;
     }
 
     public function store($request)
@@ -105,6 +107,9 @@ class ProductService
             $product->category_id = $request->category_id;
             $product->description = $request->description;
             $product->product_type = $request->product_type ?? ProductTypeEnum::Digital->value;
+            $product->meta_pixel_capi = $request->meta_pixel_capi;
+            $product->meta_token = $request->meta_token;
+            $product->meta_test_code = $request->meta_test_code;
 
             $product->aff_is_active = $request->boolean('aff_is_active') ?? false;
             $product->aff_is_percentage = $request->boolean('aff_is_percentage') ?? false;
@@ -259,6 +264,9 @@ class ProductService
             $product->title = $request->title;
             $product->description = $request->description;
             $product->category_id = $request->category_id;
+            $product->meta_pixel_capi = $request->meta_pixel_capi;
+            $product->meta_token = $request->meta_token;
+            $product->meta_test_code = $request->meta_test_code;
 
             $product->aff_is_active = $request->boolean('aff_is_active') ?? false;
             $product->aff_is_percentage = $request->boolean('aff_is_percentage') ?? false;

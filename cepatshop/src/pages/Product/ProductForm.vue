@@ -10,6 +10,39 @@
 
                   <CategoryBlock v-model="form.category_id" />
 
+                  <q-input
+                     type="text"
+                     v-model="form.meta_pixel_capi"
+                     label="Meta Pixel CAPI"
+                     placeholder="Masukkan ID Pixel Meta (hanya huruf & angka)"
+                     maxlength="255"
+                     counter
+                     :error="!!errors.meta_pixel_capi"
+                     :error-message="errors.meta_pixel_capi ? errors.meta_pixel_capi[0] : ''"
+                  />
+
+                  <q-input
+                     type="password"
+                     v-model="form.meta_token"
+                     label="Token"
+                     placeholder="Masukkan Access Token Meta (hanya huruf & angka)"
+                     maxlength="255"
+                     counter
+                     :error="!!errors.meta_token"
+                     :error-message="errors.meta_token ? errors.meta_token[0] : ''"
+                  />
+
+                  <q-input
+                     type="text"
+                     v-model="form.meta_test_code"
+                     label="KODE TEST"
+                     placeholder="Masukkan kode pengujian event (hanya huruf & angka)"
+                     maxlength="255"
+                     counter
+                     :error="!!errors.meta_test_code"
+                     :error-message="errors.meta_test_code ? errors.meta_test_code[0] : ''"
+                  />
+
                   <div class="q-mt-md q-mb-sm">
                      <label for="description" class="text-grey-7 q-pb-sm block">Deskripsi</label>
                      <ContentEditor v-model="form.description" />
@@ -301,6 +334,9 @@ export default {
             stock: 0,
             description: '',
             category_id: '',
+            meta_pixel_capi: '',
+            meta_token: '',
+            meta_test_code: '',
             varians: [],
             assets: [],
             has_subvarian: false,

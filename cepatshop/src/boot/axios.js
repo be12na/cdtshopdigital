@@ -2,6 +2,7 @@ import { boot } from 'quasar/wrappers'
 import axios from 'axios'
 
 import { Loading, Notify } from 'quasar'
+import { getRandomString } from 'src/utils'
 
 // Be careful when using SSR for cross-request state pollution
 // due to creating a Singleton instance here;
@@ -35,6 +36,10 @@ export default boot(({ app, router, store, urlPath }) => {
    Api.interceptors.request.use(config => {
 
       let session_id = store.state.session_id
+      if (!session_id) {
+         session_id = getRandomString()
+         store.commit('SET_SESSION_ID', session_id)
+      }
       if (session_id) {
          config.headers['Session-User'] = session_id;
       }
@@ -53,6 +58,10 @@ export default boot(({ app, router, store, urlPath }) => {
    BaseApi.interceptors.request.use(config => {
 
       let session_id = store.state.session_id
+      if (!session_id) {
+         session_id = getRandomString()
+         store.commit('SET_SESSION_ID', session_id)
+      }
       if (session_id) {
          config.headers['Session-User'] = session_id;
       }

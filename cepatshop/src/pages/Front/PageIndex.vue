@@ -27,13 +27,15 @@
 <script>
 import { createMetaMixin } from 'quasar'
 import { mapState } from 'vuex'
+import { defineAsyncComponent } from 'vue'
 import SplideSlider from 'components/SplideSlider.vue'
 import BannerContainer from 'components/BannerContainer.vue'
-import CategoryCarousel from 'components/CategoryCarousel.vue'
-import ProductPromo from 'components/ProductPromo.vue'
-import ProductSectionObserver from 'components/ProductSectionObserver.vue'
-import FrontPostBlock from 'components/FrontPostBlock.vue'
-import InstallApp from 'components/InstallApp.vue'
+
+const CategoryCarousel = defineAsyncComponent(() => import('components/CategoryCarousel.vue'))
+const ProductPromo = defineAsyncComponent(() => import('components/ProductPromo.vue'))
+const ProductSectionObserver = defineAsyncComponent(() => import('components/ProductSectionObserver.vue'))
+const FrontPostBlock = defineAsyncComponent(() => import('components/FrontPostBlock.vue'))
+const InstallApp = defineAsyncComponent(() => import('components/InstallApp.vue'))
 
 export default {
    components: {

@@ -19,6 +19,7 @@ class Product extends Model
    use HasFactory, Slugable;
 
    protected $guarded = [];
+   protected $hidden = ['meta_pixel_capi', 'meta_token', 'meta_test_code'];
 
    const PRODUCT_DEFAULT = 'Digital';
    const PRODUCT_DIGITAL = 'Digital';

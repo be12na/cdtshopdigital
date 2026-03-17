@@ -13,6 +13,7 @@ const routes = [
          { path: 'posts', name: 'FrontPostIndex', component: () => import('src/pages/Front/PostIndex.vue') },
          { path: 'post/:slug', name: 'FrontPostShow', component: () => import('src/pages/Front/PostDetaIl.vue') },
          { path: 'cart', name: 'Cart', component: () => import('src/pages/Shop/Cart.vue') },
+         { path: 'products/:productSlug/checkout', name: 'ProductCheckout', component: () => import('pages/Checkout/ProductCheckout.vue') },
          {
             path: 'product/:slug',
             name: 'ProductShow',

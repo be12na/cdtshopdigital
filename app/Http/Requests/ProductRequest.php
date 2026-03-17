@@ -30,6 +30,9 @@ class ProductRequest extends FormRequest
          'price' => 'required',
          'stock' => 'required',
          'description' => 'required',
+         'meta_pixel_capi' => ['nullable', 'alpha_num', 'max:255'],
+         'meta_token' => ['nullable', 'alpha_num', 'max:255'],
+         'meta_test_code' => ['nullable', 'alpha_num', 'max:255'],
          'aff_amount' => 'numeric',
          'assets' => ['required', 'array'],
          'is_unlimited_stock' => ['nullable', 'boolean'],
@@ -58,7 +61,13 @@ class ProductRequest extends FormRequest
    public function messages()
    {
       return [
-         'title.unique' => 'Nama produk sudah digunakan'
+         'title.unique' => 'Nama produk sudah digunakan',
+         'meta_pixel_capi.alpha_num' => 'Meta Pixel CAPI hanya boleh berisi huruf dan angka.',
+         'meta_pixel_capi.max' => 'Meta Pixel CAPI maksimal 255 karakter.',
+         'meta_token.alpha_num' => 'Token Meta hanya boleh berisi huruf dan angka.',
+         'meta_token.max' => 'Token Meta maksimal 255 karakter.',
+         'meta_test_code.alpha_num' => 'KODE TEST hanya boleh berisi huruf dan angka.',
+         'meta_test_code.max' => 'KODE TEST maksimal 255 karakter.',
       ];
    }
 
@@ -67,6 +76,9 @@ class ProductRequest extends FormRequest
       $this->merge([
          'title' => strip_tags($this->title),
          'product_type' => $this->product_type ?? ProductTypeEnum::Digital->value,
+         'meta_pixel_capi' => $this->meta_pixel_capi === '' ? null : $this->meta_pixel_capi,
+         'meta_token' => $this->meta_token === '' ? null : $this->meta_token,
+         'meta_test_code' => $this->meta_test_code === '' ? null : $this->meta_test_code,
       ]);
    }
 }

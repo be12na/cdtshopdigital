@@ -36,7 +36,7 @@ class RouteServiceProvider extends ServiceProvider
             ->prefix('api')
             ->group(base_path('routes/cepatshop/auth.php'));
 
-         Route::middleware(['api', Installed::class])
+         Route::middleware(['api', 'compress.response', Installed::class])
             ->prefix('api-public')
             ->group(base_path('routes/cepatshop/public.php'));
 
