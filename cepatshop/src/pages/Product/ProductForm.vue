@@ -66,15 +66,26 @@
             <q-card-section v-if="form.simple_product" class="q-pb-xl q-px-lg" style="min-height:200px;">
 
                <h5 class="q-py-md">Simple Produk</h5>
+               <q-item v-if="is_digital_type" class="q-px-none">
+                  <q-item-section>
+                     <q-toggle v-model="form.is_unlimited_stock" label="Stok Unlimited" />
+                  </q-item-section>
+               </q-item>
                <div class="row items-center q-gutter-x-sm">
                   <div class="col">
                      <money-formatter required outlined v-model="form.price" prefix="Rp" stack-label />
                   </div>
                   <div class="col">
-                     <money-formatter required outlined v-model="form.stock" label="Stok" stack-label/>
+                     <money-formatter
+                        v-if="!is_digital_unlimited_stock"
+                        required
+                        outlined
+                        v-model="form.stock"
+                        label="Stok"
+                        stack-label
+                     />
                   </div>
                </div>
-               <!-- <div class="text-amber-9 q-pa-xs q-mt-sm">* Input stok -1 untuk unlimited stok</div> -->
             </q-card-section>
 
             <q-card-section v-if="!form.simple_product" class="">
@@ -296,6 +307,7 @@ export default {
             simple_product: true,
             marketplaces: [],
             product_type: 'Digital',
+            is_unlimited_stock: false,
             aff_is_active: false,
             aff_is_percentage: false,
             aff_amount: 0,
@@ -313,8 +325,11 @@ export default {
       affiliateConfig() {
          return this.$store.state.affiliate_config
       },
-      is_product_digital() {
-         return this.form.product_type == 'Digital'
+      is_digital_type() {
+         return ['Digital', 'Digital Download', 'Digital Video'].includes(this.form.product_type)
+      },
+      is_digital_unlimited_stock() {
+         return this.is_digital_type && this.form.is_unlimited_stock == true
       },
       formTitle() {
          if (this.is_edit_product) {
@@ -370,6 +385,35 @@ export default {
          return true
       },
 
+   },
+   watch: {
+      'form.product_type': function () {
+         if (this.is_digital_type) {
+            if (this.form.is_unlimited_stock === undefined || this.form.is_unlimited_stock === null) {
+               this.form.is_unlimited_stock = false
+            }
+         } else {
+            this.form.is_unlimited_stock = false
+         }
+      },
+      'form.is_unlimited_stock': function (val) {
+         if (val == true) {
+            this.form.stock = 0
+            if (this.form.varians.length) {
+               if (this.form.varians[0].has_subvarian) {
+                  this.form.varians.forEach(v => {
+                     v.subvarian.forEach(sv => {
+                        sv.stock = 0
+                     })
+                  })
+               } else {
+                  this.form.varians.forEach(v => {
+                     v.stock = 0
+                  })
+               }
+            }
+         }
+      }
    },
    methods: {
       ...mapActions('product', ['productStore', 'productUpdate', 'removeVarian']),

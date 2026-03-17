@@ -8,6 +8,8 @@
                <div class="q-gutter-y-md">
                   <q-input required type="text" v-model="form.title" label="Title Produk"></q-input>
                   <money-formatter required v-model="form.price" prefix="Rp" stack-label />
+                  <q-toggle v-model="form.is_unlimited_stock" label="Stok Unlimited" />
+                  <money-formatter v-if="!form.is_unlimited_stock" required v-model="form.stock" label="Stok" stack-label />
                   <CategoryBlock v-model="form.category_id" />
       
                   <div class="q-mt-lg">
@@ -134,10 +136,12 @@ export default {
             id: "",
             title: "",
             price: 0,
+            stock: 0,
             category_id: "",
             description: "",
             assets: [],
             product_type: 'Digital Video',
+            is_unlimited_stock: false,
             aff_is_active: false,
             aff_is_percentage: false,
             aff_amount: 0,
@@ -173,6 +177,13 @@ export default {
          }
          return 'Tambah Produk'
       },
+   },
+   watch: {
+      'form.is_unlimited_stock': function (val) {
+         if (val == true) {
+            this.form.stock = 0
+         }
+      }
    },
    methods: {
        ...mapActions('product', ['productStore', 'productUpdate']),
@@ -267,8 +278,10 @@ export default {
          this.form._method = "PUT";
          this.form.title = data.title;
          this.form.price = data.price;
+         this.form.stock = data.stock ?? 0;
          this.form.description = data.description;
          this.form.category_id = data.category_id;
+         this.form.is_unlimited_stock = data.is_unlimited_stock ?? false;
          this.form.aff_is_active = data.aff_is_active
          this.form.aff_is_percentage = data.aff_is_percentage
          this.form.aff_amount = data.aff_amount

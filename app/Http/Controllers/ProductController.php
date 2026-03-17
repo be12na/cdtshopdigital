@@ -2,138 +2,177 @@
 
 namespace App\Http\Controllers;
 
-use Exception;
-use App\Models\Product;
+use App\Enums\ProductTypeEnum;
 use App\Helpers\ApiResponse;
-use Illuminate\Http\Request;
 use App\Http\Requests\ProductRequest;
+use App\Models\Product;
 use App\Services\Product\ProductService;
+use Exception;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+    public function __construct(protected ProductService $service)
+    {
+    }
 
-   public function __construct(protected ProductService $service)
-   {
-   }
+    public function index(Request $request)
+    {
+        try {
+            $data = $this->service->index($request);
 
-   public function index(Request $request)
-   {
-      try {
-         $data = $this->service->index($request);
-         return ApiResponse::success($data);
-      } catch (Exception $e) {
+            return ApiResponse::success($data);
+        } catch (Exception $e) {
 
-         return ApiResponse::failed($e);
-      }
-   }
-   public function productVarians($id)
-   {
-      try {
+            return ApiResponse::failed($e);
+        }
+    }
 
-         $data =  $this->service->productVarianByProductId($id);
-         return ApiResponse::success($data);
-      } catch (Exception $e) {
+    public function productVarians($id)
+    {
+        try {
 
-         return ApiResponse::failed($e);
-      }
-   }
+            $data = $this->service->productVarianByProductId($id);
 
-   public function removeVarian($id)
-   {
-      try {
+            return ApiResponse::success($data);
+        } catch (Exception $e) {
 
-         $this->service->removeVarian($id);
-         return ApiResponse::success();
-      } catch (Exception $e) {
+            return ApiResponse::failed($e);
+        }
+    }
 
-         return ApiResponse::failed($e);
-      }
-   }
+    public function removeVarian($id)
+    {
+        try {
+
+            $this->service->removeVarian($id);
+
+            return ApiResponse::success();
+        } catch (Exception $e) {
+
+            return ApiResponse::failed($e);
+        }
+    }
 
     public function getSubscriptionOptions()
-   {
-       try {
-         $this->service->getSubscriptionOptions();
-         return ApiResponse::success();
-      } catch (Exception $e) {
+    {
+        try {
+            $this->service->getSubscriptionOptions();
 
-         return ApiResponse::failed($e);
-      }
-   }
+            return ApiResponse::success();
+        } catch (Exception $e) {
 
+            return ApiResponse::failed($e);
+        }
+    }
 
-   public function searchProducts($key)
-   {
-      try {
+    public function searchProducts($key)
+    {
+        try {
 
-         $data = $this->service->search($key);
-         return ApiResponse::success($data);
-      } catch (Exception $e) {
+            $data = $this->service->search($key);
 
-         return ApiResponse::failed($e);
-      }
-   }
+            return ApiResponse::success($data);
+        } catch (Exception $e) {
 
-   public function show($id)
-   {
+            return ApiResponse::failed($e);
+        }
+    }
 
-      try {
+    public function show($id)
+    {
 
-         $data =  $this->service->show($id);
-         return ApiResponse::success($data);
-      } catch (Exception $e) {
+        try {
 
-         return ApiResponse::failed($e);
-      }
-   }
-   public function edit($id)
-   {
+            $data = $this->service->show($id);
 
-      try {
+            return ApiResponse::success($data);
+        } catch (Exception $e) {
 
-         $data =  $this->service->edit($id);
-         return ApiResponse::success($data);
-      } catch (Exception $e) {
+            return ApiResponse::failed($e);
+        }
+    }
 
-         return ApiResponse::failed($e);
-      }
-   }
+    public function edit($id)
+    {
 
-   public function store(ProductRequest $request)
-   {
+        try {
 
-      try {
+            $data = $this->service->edit($id);
 
-         $data =  $this->service->store($request);
-         return ApiResponse::success($data);
-      } catch (Exception $e) {
+            return ApiResponse::success($data);
+        } catch (Exception $e) {
 
-         return ApiResponse::failed($e);
-      }
-   }
+            return ApiResponse::failed($e);
+        }
+    }
 
-   public function update(ProductRequest $request, $id)
-   {
+    public function store(ProductRequest $request)
+    {
 
-      try {
+        try {
 
-         $this->service->update($request, $id);
+            $data = $this->service->store($request);
 
-         return ApiResponse::success();
-      } catch (Exception $e) {
+            return ApiResponse::success($data);
+        } catch (Exception $e) {
 
-         return ApiResponse::failed($e);
-      }
-   }
+            return ApiResponse::failed($e);
+        }
+    }
 
-   public function destroy($id)
-   {
-      try {
-         $this->service->destroy($id);
-         return APiResponse::success();
-      } catch (Exception $e) {
+    public function update(ProductRequest $request, $id)
+    {
 
-         return ApiResponse::failed($e);
-      }
-   }
+        try {
+
+            $this->service->update($request, $id);
+
+            return ApiResponse::success();
+        } catch (Exception $e) {
+
+            return ApiResponse::failed($e);
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $this->service->destroy($id);
+
+            return APiResponse::success();
+        } catch (Exception $e) {
+
+            return ApiResponse::failed($e);
+        }
+    }
+
+    public function toggleUnlimitedStock(Request $request, $id)
+    {
+        try {
+            $product = Product::findOrFail($id);
+
+            if (! ProductTypeEnum::isDigital($product->product_type)) {
+                return ApiResponse::withStatusCode(422)->failed('Hanya produk digital yang bisa menggunakan stok unlimited');
+            }
+
+            $isUnlimitedStock = $request->has('is_unlimited_stock')
+               ? $request->boolean('is_unlimited_stock')
+               : ! $product->is_unlimited_stock;
+
+            $product->is_unlimited_stock = $isUnlimitedStock;
+            if ($isUnlimitedStock) {
+                $product->stock = 0;
+            }
+            $product->save();
+            Product::clearCache($product->id);
+
+            return ApiResponse::success([
+                'id' => $product->id,
+                'is_unlimited_stock' => $product->is_unlimited_stock,
+            ]);
+        } catch (Exception $e) {
+            return ApiResponse::failed($e);
+        }
+    }
 }

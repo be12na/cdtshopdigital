@@ -61,6 +61,7 @@ Route::apiResource('banks', BankController::class);
 
 Route::get('products/{id}/varians', [ProductController::class, 'productVarians']);
 Route::delete('products/{id}/removeVarian', [ProductController::class, 'removeVarian']);
+Route::post('products/{id}/toggle-unlimited-stock', [ProductController::class, 'toggleUnlimitedStock']);
 Route::apiResource('products', ProductController::class);
 
 Route::get('shop', [StoreController::class, 'index']);

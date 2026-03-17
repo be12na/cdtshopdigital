@@ -32,6 +32,7 @@ class Product extends Model
 
    protected $casts = [
       'status' => 'boolean',
+      'is_unlimited_stock' => 'boolean',
       'aff_is_active' => 'boolean',
       'aff_is_percentage' => 'boolean',
       'category_id' => 'integer',
@@ -44,7 +45,6 @@ class Product extends Model
       'is_digital_download', 
       'is_digital_video',
       'affiliate_detail',
-      'is_unlimited_stock'
    ];
 
    protected static function boot()
@@ -83,13 +83,6 @@ class Product extends Model
          return $this->aff_is_percentage ? $this->aff_amount . '%' : money_format_idr($this->aff_amount);
       }
       return '';
-   }
-   public function getIsUnlimitedStockAttribute()
-   {
-      if (in_array($this->product_type, [ProductTypeEnum::Digital->value, ProductTypeEnum::DigitalDownload->value, ProductTypeEnum::DigitalVideo->value])) {
-         return true;
-      }
-      return false;
    }
     public function leads()
    {

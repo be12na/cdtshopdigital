@@ -67,7 +67,7 @@ class InstallController extends Controller
       $host     = $request->host;
       $database = $request->database;
       $username = $request->username;
-      $password = $request->password ?? null;
+      $password = $request->password;
 
       $prefix   = config("database.connections.$connection.prefix", null);
 

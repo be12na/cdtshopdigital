@@ -65,5 +65,18 @@ Jika via browser muncul error not found gunakan force refresh browser atau via H
 ### Penting!!
 Jika versi sebelumnya <= 2.7.x, fitur produk fisik (pengiriman/COD/ongkir/alamat) sudah dihapus dan seluruh produk default menjadi Digital.
 
+### API - Stok Produk Digital
+- Field baru: `products.is_unlimited_stock` (boolean)
+  - `true`: stok unlimited, transaksi tidak mengurangi stok
+  - `false`: stok terbatas, transaksi mengurangi stok (`products.stock` untuk simple product)
+
+- Toggle mode stok (Admin)
+  - Method: `POST /api/products/{id}/toggle-unlimited-stock`
+  - Auth: `auth:sanctum` + `auth.admin`
+  - Body (opsional):
+    - `is_unlimited_stock` (boolean) jika dikirim akan set nilai sesuai request, jika tidak dikirim akan toggle (flip)
+  - Response sukses:
+    - `data.id` (number)
+    - `data.is_unlimited_stock` (boolean)
 
 

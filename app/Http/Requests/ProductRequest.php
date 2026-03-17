@@ -32,18 +32,25 @@ class ProductRequest extends FormRequest
          'description' => 'required',
          'aff_amount' => 'numeric',
          'assets' => ['required', 'array'],
+         'is_unlimited_stock' => ['nullable', 'boolean'],
       ];
-      
-      if($this->product_type == ProductTypeEnum::DigitalVideo->value) {
-         $rules['stock'] = 'nullable';
+
+      $isDigitalType = in_array($this->product_type, [
+         ProductTypeEnum::Digital->value,
+         ProductTypeEnum::DigitalDownload->value,
+         ProductTypeEnum::DigitalVideo->value,
+      ], true);
+
+      if ($isDigitalType) {
+         $isUnlimitedStock = $this->has('is_unlimited_stock') ? $this->boolean('is_unlimited_stock') : true;
+         $rules['stock'] = $isUnlimitedStock ? 'nullable' : 'required|integer|min:0';
+      }
+
+      if ($this->product_type == ProductTypeEnum::DigitalVideo->value) {
          $rules['digital_videos'] = ['required', 'array'];
       }
-      if($this->product_type == ProductTypeEnum::DigitalDownload->value) {
-         $rules['stock'] = 'nullable';
+      if ($this->product_type == ProductTypeEnum::DigitalDownload->value) {
          $rules['digital_downloads'] = ['required', 'array'];
-      }
-      if($this->product_type == ProductTypeEnum::Digital->value) {
-         $rules['stock'] = 'nullable';
       }
 
       return $rules;
